@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:padding="12dp"
+    android:gravity="center_vertical"
+    android:background="@color/riot_black_light"
+    android:layout_marginBottom="8dp">
+
+    <ImageView
+        android:id="@+id/iv_cart_item_image"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:scaleType="centerCrop"
+        tools:src="@drawable/placeholder_account" />
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:layout_marginStart="12dp">
+
+        <TextView
+            android:id="@+id/tv_cart_item_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/riot_text_light"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            tools:text="Tên Sản Phẩm" />
+
+        <TextView
+            android:id="@+id/tv_cart_item_price"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:textColor="@color/riot_red_primary"
+            android:textSize="15sp"
+            tools:text="999.999 VNĐ" />
+
+    </LinearLayout>
+
+    <ImageButton
+        android:id="@+id/btn_remove_from_cart"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:src="@android:drawable/ic_menu_delete"
+        app:tint="@color/riot_gold_accent" />
+
+</LinearLayout>

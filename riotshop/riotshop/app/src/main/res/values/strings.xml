@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Riotshop</string>
+
+    <string name="title_login">ĐĂNG NHẬP</string>
+    <string name="title_signup">TẠO TÀI KHOẢN</string>
+    <string name="title_forgot_password">QUÊN MẬT KHẨU</string>
+
+    <string name="hint_email">Email</string>
+    <string name="hint_password">Mật khẩu</string>
+    <string name="button_login">ĐĂNG NHẬP</string>
+    <string name="text_forgot_password">Quên mật khẩu?</string>
+    <string name="text_no_account">Chưa có tài khoản? Đăng ký ngay</string>
+    <string name="hint_username">Tên người dùng</string>
+    <string name="hint_confirm_password">Xác nhận Mật khẩu</string>
+    <string name="button_signup">ĐĂNG KÝ</string>
+
+    <string name="text_already_have_account">Đã có tài khoản? Đăng nhập</string>
+
+    <string name="text_forgot_password_instruction">Vui lòng nhập email đã đăng ký để nhận liên kết đặt lại mật khẩu.</string>
+    <string name="button_reset_password">GỬI YÊU CẦU ĐẶT LẠI</string>
+
+    <string name="title_main_functions">Chức Năng Chính</string>
+    <string name="menu_home">Trang Chủ</string>
+    <string name="menu_cart">Giỏ Hàng</string>
+    <string name="menu_history">Lịch Sử Đơn Hàng</string>
+    <string name="menu_deposit">Nạp Tiền</string>
+    <string name="menu_profile">Thông Tin Cá Nhân</string>
+    <string name="menu_logout">Đăng Xuất</string>
+    <string name="action_search">Tìm kiếm...</string>
+
+    <string name="nav_header_title">Xin chào, Người Dùng!</string>
+    <string name="nav_header_subtitle">Sẵn sàng mua sắm?</string>
+    <string name="nav_header_desc">Menu điều hướng chính</string>
+
+    <string name="function_account_manager">Quản Lý Tài Khoản</string>
+    <string name="function_deposit">Nạp Tiền</string>
+    <string name="function_history">Lịch Sử Giao Dịch</string>
+    <string name="function_support">Hỗ Trợ</string>
+
+    <string name="currency_vnd"> VNĐ</string>
+    <string name="content_desc_image">Ảnh mô tả</string>
+    <string name="content_desc_profile">Icon Profile</string>
+    <string name="welcome_message">CHÀO MỪNG ĐẾN VỚI RIOTSHOP!</string>
+
+</resources>

@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/riot_black_dark"
+    tools:context=".ui.cart.CartActivity">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appbar_cart"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar_cart"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/riot_black_light"
+            app:title="Giỏ Hàng"
+            app:titleTextColor="@color/riot_gold_accent" />
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_cart_items"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/appbar_cart"
+        android:layout_above="@+id/bottom_checkout_bar"
+        android:padding="8dp"
+        tools:listitem="@layout/cart_item_layout" />
+
+    <TextView
+        android:id="@+id/tv_empty_cart"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:text="Giỏ hàng của bạn đang trống"
+        android:textColor="@color/riot_text_hint"
+        android:textSize="18sp"
+        android:visibility="gone" />
+
+    <LinearLayout
+        android:id="@+id/bottom_checkout_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="@color/riot_black_light"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <TextView
+            android:id="@+id/tv_total_price"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:textColor="@color/riot_text_light"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            tools:text="Tổng cộng: 3.300.000 VNĐ" />
+
+        <Button
+            android:id="@+id/btn_checkout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:backgroundTint="@color/riot_gold_accent"
+            android:text="Tiến hành thanh toán"
+            android:textColor="@color/riot_black_dark" />
+
+    </LinearLayout>
+
+</RelativeLayout>

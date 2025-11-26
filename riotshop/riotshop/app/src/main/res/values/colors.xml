@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="riot_black_dark">#121212</color>
+    <color name="riot_red_primary">#E3003B</color>
+    <color name="riot_gold_accent">#FFC72C</color>
+    <color name="riot_text_light">#FFFFFF</color>
+    <color name="riot_text_hint">#AAAAAA</color>
+    <color name="riot_black_light">#222222</color>
+
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+</resources>
