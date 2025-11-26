@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <path
+        android:fillColor="@color/riot_gold_accent"
+        android:pathData="M17,18c-1.1,0 -1.99,0.9 -1.99,2s0.89,2 1.99,2 2,-0.9 2,-2 -0.9,-2 -2,-2zM7,18c-1.1,0 -1.99,0.9 -1.99,2s0.89,2 1.99,2 2,-0.9 2,-2 -0.9,-2 -2,-2zM19,10V7c0,-0.55 -0.45,-1 -1,-1H6C5.45,6 5,6.45 5,7v3H2l2.32,6.96C4.6,17.42 5.09,17.75 5.61,17.75h12.78c0.52,0 1.01,-0.33 1.29,-0.79L22,10H19zM6.29,8h11.42l-1.83,5.5H8.12L6.29,8z" />
+</vector>
