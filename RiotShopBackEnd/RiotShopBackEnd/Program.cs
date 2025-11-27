@@ -6,6 +6,11 @@ using RiotShopBackEnd.Services;
 using MySqlConnector;
 using System.Text;
 using Microsoft.OpenApi.Models;
+using Microsoft.OpenApi.Any;
+using Swashbuckle.AspNetCore.SwaggerGen;
+using System.Linq;
+using Microsoft.AspNetCore.Authorization;
+using RiotShopBackEnd.Filters;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -31,28 +36,11 @@ builder.Services.AddSwaggerGen(c =>
         In = ParameterLocation.Header,
         Type = SecuritySchemeType.Http,
         Scheme = "Bearer",
-        BearerFormat = "JWT",
-        Reference = new OpenApiReference
-        {
-            Type = ReferenceType.SecurityScheme,
-            Id = "Bearer"
-        }
+        BearerFormat = "JWT"
     });
-
-    c.AddSecurityRequirement(new OpenApiSecurityRequirement
-    {
-        {
-            new OpenApiSecurityScheme
-            {
-                Reference = new OpenApiReference
-                {
-                    Type = ReferenceType.SecurityScheme,
-                    Id = "Bearer"
-                }
-            },
-            Array.Empty<string>()
-        }
-    });
+    
+    // Thêm Operation Filter để chỉ áp dụng security cho endpoints có [Authorize]
+    c.OperationFilter<SecurityRequirementsOperationFilter>();
 });
 
 // Configure CORS - Cho phép Android app kết nối
@@ -111,42 +99,73 @@ builder.Services.AddAuthentication(options =>
         ValidateLifetime = true,
         ClockSkew = TimeSpan.Zero
     };
+    
+    // Bỏ qua authentication cho Swagger endpoints
+    options.Events = new Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerEvents
+    {
+        OnMessageReceived = context =>
+        {
+            // Bỏ qua authentication cho Swagger paths
+            if (context.Request.Path.StartsWithSegments("/swagger"))
+            {
+                context.Token = null;
+            }
+            return System.Threading.Tasks.Task.CompletedTask;
+        }
+    };
 });
 
-builder.Services.AddAuthorization();
+builder.Services.AddAuthorization(options =>
+{
+    // Cho phép Swagger endpoints không cần authentication
+    options.FallbackPolicy = null;
+});
 
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI(c =>
-    {
-        c.SwaggerEndpoint("/swagger/v1/swagger.json", "RiotShop API v1");
-        c.RoutePrefix = string.Empty; // Swagger UI ở root URL
-        c.DisplayRequestDuration();
-        c.EnableDeepLinking();
-        c.EnableFilter();
-        c.ShowExtensions();
-        c.EnableValidator();
-        c.DocExpansion(Swashbuckle.AspNetCore.SwaggerUI.DocExpansion.List);
-    });
-}
+// Thứ tự middleware theo best practice
 
-// Enable CORS - Phải đặt trước UseAuthorization
+// 1. CORS
 app.UseCors("AllowAndroidApp");
 
-// Chỉ redirect HTTPS trong production
-if (!app.Environment.IsDevelopment())
+// 2. Middleware để đảm bảo token có prefix "Bearer" và redirect /swagger/index.html về /swagger
+app.Use(async (context, next) =>
 {
-    app.UseHttpsRedirection();
-}
+    // Redirect /swagger/index.html về /swagger
+    if (context.Request.Path == "/swagger/index.html")
+    {
+        context.Response.Redirect("/swagger", permanent: false);
+        return;
+    }
+    
+    var token = context.Request.Headers["Authorization"].FirstOrDefault();
+    if (!string.IsNullOrEmpty(token) && !token.StartsWith("Bearer "))
+    {
+        context.Request.Headers["Authorization"] = $"Bearer {token}";
+    }
+    await next();
+});
 
+// 3. Authentication và Authorization
 app.UseAuthentication();
 app.UseAuthorization();
 
-// Map controllers với prefix /api
+// 4. Swagger và SwaggerUI - đặt SAU UseAuthentication và UseAuthorization
+app.UseSwagger();
+app.UseSwaggerUI(c =>
+{
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "RiotShop API v1");
+    c.RoutePrefix = "swagger"; // Swagger UI ở /swagger (truy cập: https://localhost:5001/swagger)
+    c.DisplayRequestDuration();
+    c.EnableDeepLinking();
+    c.EnableFilter();
+    c.ShowExtensions();
+    c.EnableValidator();
+    c.DocExpansion(Swashbuckle.AspNetCore.SwaggerUI.DocExpansion.List);
+});
+
+// 5. Map controllers với prefix /api
 app.MapControllers();
 
 app.Run();
