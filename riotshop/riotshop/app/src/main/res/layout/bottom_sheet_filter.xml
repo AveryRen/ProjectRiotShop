@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/riot_black_dark">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Bộ lọc"
+            android:textColor="@color/riot_gold_accent"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="16dp" />
+
+        <!-- Filter by Game -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Lọc theo game"
+            android:textColor="@color/riot_text_light"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_filter_games"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:nestedScrollingEnabled="false" />
+
+        <!-- Filter by Featured -->
+        <CheckBox
+            android:id="@+id/cb_featured"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="Sản phẩm nổi bật"
+            android:textColor="@color/riot_text_light" />
+
+        <!-- Filter by Price Range -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Lọc theo giá"
+            android:textColor="@color/riot_text_light"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="8dp" />
+
+        <RadioGroup
+            android:id="@+id/rg_price_filter"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <RadioButton
+                android:id="@+id/rb_price_all"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Tất cả giá"
+                android:textColor="@color/riot_text_light"
+                android:checked="true" />
+
+            <RadioButton
+                android:id="@+id/rb_price_low"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Dưới 100.000 VNĐ"
+                android:textColor="@color/riot_text_light" />
+
+            <RadioButton
+                android:id="@+id/rb_price_medium"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="100.000 - 500.000 VNĐ"
+                android:textColor="@color/riot_text_light" />
+
+            <RadioButton
+                android:id="@+id/rb_price_high"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Trên 500.000 VNĐ"
+                android:textColor="@color/riot_text_light" />
+
+        </RadioGroup>
+
+        <!-- Sort Options -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Sắp xếp"
+            android:textColor="@color/riot_text_light"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="8dp" />
+
+        <RadioGroup
+            android:id="@+id/rg_sort"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <RadioButton
+                android:id="@+id/rb_sort_default"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Mặc định"
+                android:textColor="@color/riot_text_light"
+                android:checked="true" />
+
+            <RadioButton
+                android:id="@+id/rb_sort_price_low"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Giá: Thấp đến cao"
+                android:textColor="@color/riot_text_light" />
+
+            <RadioButton
+                android:id="@+id/rb_sort_price_high"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Giá: Cao xuống thấp"
+                android:textColor="@color/riot_text_light" />
+
+            <RadioButton
+                android:id="@+id/rb_sort_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Tên: A-Z"
+                android:textColor="@color/riot_text_light" />
+
+        </RadioGroup>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="24dp"
+            android:layout_marginBottom="8dp">
+
+            <Button
+                android:id="@+id/btn_reset_filter"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginEnd="8dp"
+                android:text="Đặt lại"
+                android:backgroundTint="@color/riot_black_light"
+                android:textColor="@color/riot_text_light" />
+
+            <Button
+                android:id="@+id/btn_apply_filter"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Áp dụng"
+                android:backgroundTint="@color/riot_gold_accent"
+                android:textColor="@color/riot_black_dark" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+</androidx.core.widget.NestedScrollView>
+

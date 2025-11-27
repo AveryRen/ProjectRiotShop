@@ -1,15 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/riot_black_dark">
 
     <TextView
+        android:id="@+id/tv_empty_orders"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:text="Lịch Sử Đơn Hàng"
-        android:textColor="@color/riot_gold_accent"
-        android:textSize="24sp" />
+        android:text="Chưa có đơn hàng nào"
+        android:textColor="@color/riot_text_light"
+        android:textSize="18sp"
+        android:visibility="gone" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_orders"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="8dp"
+        tools:listitem="@layout/item_order" />
 
 </FrameLayout>

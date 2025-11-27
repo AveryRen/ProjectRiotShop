@@ -18,7 +18,9 @@ import androidx.fragment.app.FragmentTransaction;
 import com.example.riotshop.R;
 import com.example.riotshop.ui.auth.LoginActivity;
 import com.example.riotshop.ui.cart.CartFragment;
+import com.example.riotshop.ui.favorite.FavoriteActivity;
 import com.example.riotshop.ui.other.OrderHistoryFragment;
+import com.example.riotshop.ui.other.PurchasedAccountsActivity;
 import com.example.riotshop.ui.profile.ProfileFragment;
 import com.example.riotshop.utils.SharedPrefManager;
 import com.google.android.material.navigation.NavigationView;
@@ -72,8 +74,18 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             selectedFragment = new HomeFragment();
         } else if (itemId == R.id.nav_cart) {
             selectedFragment = new CartFragment();
+        } else if (itemId == R.id.nav_favorite) {
+            Intent favoriteIntent = new Intent(this, FavoriteActivity.class);
+            startActivity(favoriteIntent);
+            drawer.closeDrawer(GravityCompat.START);
+            return true;
         } else if (itemId == R.id.nav_history) {
             selectedFragment = new OrderHistoryFragment();
+        } else if (itemId == R.id.nav_purchased_accounts) {
+            Intent purchasedIntent = new Intent(this, PurchasedAccountsActivity.class);
+            startActivity(purchasedIntent);
+            drawer.closeDrawer(GravityCompat.START);
+            return true;
         } else if (itemId == R.id.nav_profile) {
             selectedFragment = new ProfileFragment();
         } else if (itemId == R.id.nav_deposit) {

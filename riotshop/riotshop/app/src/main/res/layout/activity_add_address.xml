@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/riot_black_dark">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar_add_address"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/riot_black_light"
+            app:titleTextColor="@color/riot_gold_accent" />
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <EditText
+                android:id="@+id/et_full_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Họ và tên *"
+                android:inputType="textPersonName"
+                android:textColor="@color/riot_text_light"
+                android:textColorHint="@color/riot_text_hint"
+                android:backgroundTint="@color/riot_gold_accent"
+                android:minHeight="48dp"
+                android:layout_marginBottom="16dp" />
+
+            <EditText
+                android:id="@+id/et_phone"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Số điện thoại *"
+                android:inputType="phone"
+                android:textColor="@color/riot_text_light"
+                android:textColorHint="@color/riot_text_hint"
+                android:backgroundTint="@color/riot_gold_accent"
+                android:minHeight="48dp"
+                android:layout_marginBottom="16dp" />
+
+            <EditText
+                android:id="@+id/et_address_line"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Địa chỉ chi tiết *"
+                android:inputType="textPostalAddress"
+                android:textColor="@color/riot_text_light"
+                android:textColorHint="@color/riot_text_hint"
+                android:backgroundTint="@color/riot_gold_accent"
+                android:minHeight="48dp"
+                android:layout_marginBottom="16dp" />
+
+            <EditText
+                android:id="@+id/et_ward"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Phường/Xã"
+                android:inputType="text"
+                android:textColor="@color/riot_text_light"
+                android:textColorHint="@color/riot_text_hint"
+                android:backgroundTint="@color/riot_gold_accent"
+                android:minHeight="48dp"
+                android:layout_marginBottom="16dp" />
+
+            <EditText
+                android:id="@+id/et_district"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Quận/Huyện"
+                android:inputType="text"
+                android:textColor="@color/riot_text_light"
+                android:textColorHint="@color/riot_text_hint"
+                android:backgroundTint="@color/riot_gold_accent"
+                android:minHeight="48dp"
+                android:layout_marginBottom="16dp" />
+
+            <EditText
+                android:id="@+id/et_city"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Thành phố/Tỉnh"
+                android:inputType="text"
+                android:textColor="@color/riot_text_light"
+                android:textColorHint="@color/riot_text_hint"
+                android:backgroundTint="@color/riot_gold_accent"
+                android:minHeight="48dp"
+                android:layout_marginBottom="16dp" />
+
+            <CheckBox
+                android:id="@+id/cb_is_default"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Đặt làm địa chỉ mặc định"
+                android:textColor="@color/riot_text_light"
+                android:layout_marginBottom="24dp" />
+
+            <Button
+                android:id="@+id/btn_save_address"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Lưu địa chỉ"
+                android:backgroundTint="@color/riot_gold_accent"
+                android:textColor="@color/riot_black_dark"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+</LinearLayout>
+

@@ -16,6 +16,12 @@ public class User {
         this.email = email;
         // ...
     }
+    
+    // Constructor đơn giản cho login
+    public User(String username, String email) {
+        this.username = username;
+        this.email = email;
+    }
 
     // 🔑 PHƯƠNG THỨC CẦN THIẾT ĐỂ KHẮC PHỤC LỖI Cannot resolve method 'getUsername'
     public String getUsername() {

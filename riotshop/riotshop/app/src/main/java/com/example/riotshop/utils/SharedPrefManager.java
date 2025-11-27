@@ -12,6 +12,8 @@ public class SharedPrefManager {
     private static final String KEY_USERNAME = "keyUsername";
     private static final String KEY_USER_ROLE = "keyUserRole";
     private static final String KEY_IS_LOGGED_IN = "keyIsLoggedIn";
+    private static final String KEY_TOKEN = "keyToken";
+    private static final String KEY_IS_ADMIN = "keyIsAdmin";
 
     private static SharedPrefManager instance;
     private static Context ctx;
@@ -26,6 +28,11 @@ public class SharedPrefManager {
         if (instance == null) {
             instance = new SharedPrefManager(context);
         }
+        return instance;
+    }
+    
+    // Get instance without context (for use in interceptors)
+    public static synchronized SharedPrefManager getInstance() {
         return instance;
     }
 
@@ -53,6 +60,36 @@ public class SharedPrefManager {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.clear();
         editor.apply();
+    }
+    
+    // Save token
+    public void saveToken(String token) {
+        SharedPreferences sharedPreferences = ctx.getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(KEY_TOKEN, token);
+        editor.apply();
+    }
+    
+    // Get token
+    public String getToken() {
+        if (ctx == null) return null;
+        SharedPreferences sharedPreferences = ctx.getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
+        return sharedPreferences.getString(KEY_TOKEN, null);
+    }
+    
+    // Save isAdmin status
+    public void saveIsAdmin(boolean isAdmin) {
+        SharedPreferences sharedPreferences = ctx.getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean(KEY_IS_ADMIN, isAdmin);
+        editor.apply();
+    }
+    
+    // Get isAdmin status
+    public boolean isAdmin() {
+        if (ctx == null) return false;
+        SharedPreferences sharedPreferences = ctx.getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
+        return sharedPreferences.getBoolean(KEY_IS_ADMIN, false);
     }
 
     // ... (Các phương thức khác)

@@ -13,9 +13,17 @@
             android:icon="@drawable/ic_cart_gold"
             android:title="@string/menu_cart" />
         <item
+            android:id="@+id/nav_favorite"
+            android:icon="@drawable/ic_favorite_gold"
+            android:title="@string/menu_favorite" />
+        <item
             android:id="@+id/nav_history"
             android:icon="@drawable/ic_history_gold"
             android:title="@string/menu_history" />
+        <item
+            android:id="@+id/nav_purchased_accounts"
+            android:icon="@drawable/ic_account_gold"
+            android:title="@string/menu_purchased_accounts" />
         <item
             android:id="@+id/nav_deposit"
             android:icon="@drawable/ic_deposit_gold"

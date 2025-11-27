@@ -1,5 +1,6 @@
 package com.example.riotshop.ui.cart;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,18 +17,27 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.riotshop.R;
 import com.example.riotshop.adapters.CartAdapter;
-import com.example.riotshop.managers.CartManager;
-import com.example.riotshop.models.Product;
+import com.example.riotshop.api.ApiService;
+import com.example.riotshop.api.RetrofitClient;
+import com.example.riotshop.models.ApiResponse;
+import com.example.riotshop.models.CartItem;
+import com.example.riotshop.ui.other.CheckoutActivity;
+import com.example.riotshop.utils.SharedPrefManager;
 
 import java.text.NumberFormat;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class CartFragment extends Fragment implements CartAdapter.OnItemRemoveListener {
 
     private RecyclerView rvCartItems;
     private CartAdapter cartAdapter;
-    private List<Product> cartItems;
+    private List<CartItem> cartItems;
     private TextView tvEmptyCart, tvTotalPrice;
     private Button btnCheckout;
     private View bottomBar;
@@ -43,23 +53,58 @@ public class CartFragment extends Fragment implements CartAdapter.OnItemRemoveLi
         btnCheckout = view.findViewById(R.id.btn_checkout_fragment);
         bottomBar = view.findViewById(R.id.bottom_checkout_bar_fragment);
 
-        setupCart();
+        cartItems = new ArrayList<>();
+        loadCart();
 
         btnCheckout.setOnClickListener(v -> {
-            Toast.makeText(getContext(), "Chức năng Thanh toán đang được phát triển", Toast.LENGTH_SHORT).show();
+            if (cartItems.isEmpty()) {
+                Toast.makeText(getContext(), "Giỏ hàng trống", Toast.LENGTH_SHORT).show();
+            } else {
+                Intent intent = new Intent(getActivity(), CheckoutActivity.class);
+                startActivity(intent);
+            }
         });
 
         return view;
     }
 
-    private void setupCart() {
-        cartItems = CartManager.getInstance().getCartItems();
-
-        if (cartItems.isEmpty()) {
+    private void loadCart() {
+        String token = SharedPrefManager.getInstance(getContext()).getToken();
+        if (token == null) {
             showEmptyCart();
-        } else {
-            showCartItems();
+            return;
         }
+
+        ApiService apiService = RetrofitClient.getInstance().getApiService();
+        Call<ApiResponse<List<CartItem>>> call = apiService.getCart("Bearer " + token);
+        
+        call.enqueue(new Callback<ApiResponse<List<CartItem>>>() {
+            @Override
+            public void onResponse(Call<ApiResponse<List<CartItem>>> call, Response<ApiResponse<List<CartItem>>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    ApiResponse<List<CartItem>> apiResponse = response.body();
+                    if (apiResponse.isSuccess() && apiResponse.getData() != null) {
+                        cartItems.clear();
+                        cartItems.addAll(apiResponse.getData());
+                        if (cartItems.isEmpty()) {
+                            showEmptyCart();
+                        } else {
+                            showCartItems();
+                        }
+                    } else {
+                        showEmptyCart();
+                    }
+                } else {
+                    showEmptyCart();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ApiResponse<List<CartItem>>> call, Throwable t) {
+                Toast.makeText(getContext(), "Lỗi khi tải giỏ hàng: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                showEmptyCart();
+            }
+        });
     }
 
     private void showEmptyCart() {
@@ -83,12 +128,9 @@ public class CartFragment extends Fragment implements CartAdapter.OnItemRemoveLi
 
     private void updateTotalPrice() {
         double total = 0;
-        for (Product product : cartItems) {
-            try {
-                String priceString = product.getPrice().replaceAll("[^\\d]", "");
-                total += Double.parseDouble(priceString);
-            } catch (NumberFormatException e) {
-                // Bỏ qua sản phẩm có giá không hợp lệ
+        for (CartItem item : cartItems) {
+            if (item.getProductTemplate() != null) {
+                total += item.getProductTemplate().getBasePrice() * item.getQuantity();
             }
         }
 
@@ -97,15 +139,46 @@ public class CartFragment extends Fragment implements CartAdapter.OnItemRemoveLi
     }
 
     @Override
-    public void onItemRemove(Product product) {
-        CartManager.getInstance().removeProduct(product);
-        cartAdapter.notifyDataSetChanged();
-        updateTotalPrice();
-
-        if (cartItems.isEmpty()) {
-            showEmptyCart();
+    public void onItemRemove(CartItem cartItem) {
+        String token = SharedPrefManager.getInstance(getContext()).getToken();
+        if (token == null) {
+            Toast.makeText(getContext(), "Vui lòng đăng nhập", Toast.LENGTH_SHORT).show();
+            return;
         }
 
-        Toast.makeText(getContext(), "Đã xóa '" + product.getName() + "' khỏi giỏ hàng", Toast.LENGTH_SHORT).show();
+        ApiService apiService = RetrofitClient.getInstance().getApiService();
+        Call<ApiResponse<Object>> call = apiService.removeCartItem("Bearer " + token, cartItem.getCartItemId());
+        
+        call.enqueue(new Callback<ApiResponse<Object>>() {
+            @Override
+            public void onResponse(Call<ApiResponse<Object>> call, Response<ApiResponse<Object>> response) {
+                if (response.isSuccessful() && response.body() != null && response.body().isSuccess()) {
+                    cartItems.remove(cartItem);
+                    cartAdapter.notifyDataSetChanged();
+                    updateTotalPrice();
+                    
+                    if (cartItems.isEmpty()) {
+                        showEmptyCart();
+                    }
+                    
+                    String productName = cartItem.getProductTemplate() != null ? 
+                        cartItem.getProductTemplate().getTitle() : "Sản phẩm";
+                    Toast.makeText(getContext(), "Đã xóa '" + productName + "' khỏi giỏ hàng", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(getContext(), "Lỗi khi xóa sản phẩm", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ApiResponse<Object>> call, Throwable t) {
+                Toast.makeText(getContext(), "Lỗi kết nối: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+    
+    @Override
+    public void onResume() {
+        super.onResume();
+        loadCart(); // Reload cart when fragment resumes
     }
 }

@@ -9,10 +9,10 @@
 
     <ImageView
         android:id="@+id/iv_category_icon"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
         android:src="@drawable/ic_category_default"
-        android:padding="12dp"
+        android:padding="6dp"
         android:background="@drawable/bg_category_red"
         android:contentDescription="Category Icon" />
 
@@ -22,7 +22,10 @@
         android:layout_height="wrap_content"
         android:text="Liên Minh"
         android:textColor="@color/riot_text_light"
-        android:textSize="14sp"
+        android:textSize="12sp"
+        android:maxLines="2"
+        android:ellipsize="end"
+        android:gravity="center"
         android:layout_marginTop="4dp"/>
 
 </LinearLayout>

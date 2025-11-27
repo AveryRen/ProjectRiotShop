@@ -49,16 +49,34 @@
                 android:textStyle="bold"
                 tools:text="Tên Sản Phẩm" />
 
-            <TextView
-                android:id="@+id/tv_product_price_detail"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:paddingHorizontal="16dp"
-                android:textColor="@color/riot_red_primary"
-                android:textSize="22sp"
-                android:textStyle="bold"
-                tools:text="999.999 VNĐ" />
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:id="@+id/tv_product_price_detail"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textColor="@color/riot_red_primary"
+                    android:textSize="22sp"
+                    android:textStyle="bold"
+                    tools:text="999.999 VNĐ" />
+
+                <ImageButton
+                    android:id="@+id/btn_favorite"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:src="@drawable/ic_favorite_border_gold"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:contentDescription="Yêu thích"
+                    android:padding="8dp" />
+
+            </LinearLayout>
 
             <TextView
                 android:layout_width="match_parent"
@@ -80,6 +98,82 @@
                 android:textColor="@color/riot_text_light"
                 android:textSize="16sp"
                 tools:text="- Dòng mô tả 1.\n- Dòng mô tả 2.\n- Dòng mô tả 3." />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:paddingHorizontal="16dp"
+                android:text="Sản phẩm liên quan"
+                android:textColor="@color/riot_gold_accent"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_related_products"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:paddingHorizontal="8dp"
+                android:orientation="horizontal"
+                tools:listitem="@layout/item_product" />
+
+            <!-- Reviews Section -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:paddingHorizontal="16dp"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Đánh giá &amp; Nhận xét"
+                        android:textColor="@color/riot_gold_accent"
+                        android:textSize="18sp"
+                        android:textStyle="bold" />
+
+                    <Button
+                        android:id="@+id/btn_add_review"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Viết đánh giá"
+                        android:textSize="12sp"
+                        android:paddingHorizontal="12dp"
+                        android:paddingVertical="4dp"
+                        android:backgroundTint="@color/riot_gold_accent"
+                        android:textColor="@color/riot_black_dark" />
+
+                </LinearLayout>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_reviews"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:nestedScrollingEnabled="false"
+                    tools:listitem="@layout/item_review" />
+
+                <TextView
+                    android:id="@+id/tv_no_reviews"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:text="Chưa có đánh giá nào"
+                    android:textColor="@color/riot_text_hint"
+                    android:textSize="14sp"
+                    android:gravity="center"
+                    android:visibility="gone" />
+
+            </LinearLayout>
 
         </LinearLayout>
 

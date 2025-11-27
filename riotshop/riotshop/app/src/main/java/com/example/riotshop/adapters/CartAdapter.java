@@ -12,26 +12,27 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.riotshop.R;
-import com.example.riotshop.models.Product;
+import com.example.riotshop.models.CartItem;
+import com.example.riotshop.utils.FormatUtils;
 
 import java.util.List;
 
 public class CartAdapter extends RecyclerView.Adapter<CartAdapter.CartViewHolder> {
 
     private Context context;
-    private List<Product> cartItems;
+    private List<CartItem> cartItems;
     private OnItemRemoveListener removeListener;
 
     // Interface for remove click event
     public interface OnItemRemoveListener {
-        void onItemRemove(Product product);
+        void onItemRemove(CartItem cartItem);
     }
 
     public void setOnItemRemoveListener(OnItemRemoveListener listener) {
         this.removeListener = listener;
     }
 
-    public CartAdapter(Context context, List<Product> cartItems) {
+    public CartAdapter(Context context, List<CartItem> cartItems) {
         this.context = context;
         this.cartItems = cartItems;
     }
@@ -45,11 +46,17 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.CartViewHolder
 
     @Override
     public void onBindViewHolder(@NonNull CartViewHolder holder, int position) {
-        Product product = cartItems.get(position);
-
-        holder.tvCartItemName.setText(product.getName());
-        holder.tvCartItemPrice.setText(product.getPrice());
-        holder.ivCartItemImage.setImageResource(product.getImage());
+        CartItem cartItem = cartItems.get(position);
+        
+        if (cartItem.getProductTemplate() != null) {
+            holder.tvCartItemName.setText(cartItem.getProductTemplate().getTitle());
+            double totalPrice = cartItem.getProductTemplate().getBasePrice() * cartItem.getQuantity();
+            holder.tvCartItemPrice.setText(FormatUtils.formatPrice(totalPrice));
+            if (holder.tvQuantity != null) {
+                holder.tvQuantity.setText("x" + cartItem.getQuantity());
+            }
+            holder.ivCartItemImage.setImageResource(R.drawable.placeholder_account);
+        }
     }
 
     @Override
@@ -59,7 +66,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.CartViewHolder
 
     public class CartViewHolder extends RecyclerView.ViewHolder {
         ImageView ivCartItemImage;
-        TextView tvCartItemName, tvCartItemPrice;
+        TextView tvCartItemName, tvCartItemPrice, tvQuantity;
         ImageButton btnRemoveFromCart;
 
         public CartViewHolder(@NonNull View itemView) {
@@ -67,6 +74,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.CartViewHolder
             ivCartItemImage = itemView.findViewById(R.id.iv_cart_item_image);
             tvCartItemName = itemView.findViewById(R.id.tv_cart_item_name);
             tvCartItemPrice = itemView.findViewById(R.id.tv_cart_item_price);
+            tvQuantity = itemView.findViewById(R.id.tv_cart_item_quantity);
             btnRemoveFromCart = itemView.findViewById(R.id.btn_remove_from_cart);
 
             btnRemoveFromCart.setOnClickListener(v -> {

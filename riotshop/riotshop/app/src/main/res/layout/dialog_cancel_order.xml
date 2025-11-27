@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:background="@color/riot_black_dark">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Hủy đơn hàng"
+        android:textColor="@color/riot_gold_accent"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="16dp" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Vui lòng nhập lý do hủy đơn hàng:"
+        android:textColor="@color/riot_text_light"
+        android:textSize="14sp"
+        android:layout_marginBottom="8dp" />
+
+    <EditText
+        android:id="@+id/et_cancel_reason"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="100dp"
+        android:gravity="top|start"
+        android:hint="Nhập lý do hủy đơn..."
+        android:inputType="textMultiLine"
+        android:textColor="@color/riot_text_light"
+        android:textColorHint="@color/riot_text_hint"
+        android:backgroundTint="@color/riot_gold_accent"
+        android:layout_marginBottom="16dp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btn_cancel_dialog"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginEnd="8dp"
+            android:text="Hủy"
+            android:backgroundTint="@color/riot_black_light"
+            android:textColor="@color/riot_text_light" />
+
+        <Button
+            android:id="@+id/btn_confirm_cancel"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Xác nhận"
+            android:backgroundTint="@color/riot_red_primary"
+            android:textColor="@color/riot_text_light" />
+
+    </LinearLayout>
+
+</LinearLayout>
+

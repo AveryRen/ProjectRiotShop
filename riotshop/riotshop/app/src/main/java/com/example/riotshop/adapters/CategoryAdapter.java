@@ -16,10 +16,38 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
 
     private final Context context;
     private final List<Category> categoryList;
+    private OnCategoryClickListener onCategoryClickListener;
+    private int selectedPosition = 0;
+
+    public interface OnCategoryClickListener {
+        void onCategoryClick(Category category);
+    }
 
     public CategoryAdapter(Context context, List<Category> categoryList) {
         this.context = context;
         this.categoryList = categoryList;
+    }
+
+    public void setOnCategoryClickListener(OnCategoryClickListener listener) {
+        this.onCategoryClickListener = listener;
+    }
+    
+    public void setSelectedPosition(int position) {
+        if (position >= 0 && position < categoryList.size()) {
+            int previousSelected = selectedPosition;
+            selectedPosition = position;
+            notifyItemChanged(previousSelected);
+            notifyItemChanged(selectedPosition);
+        }
+    }
+    
+    public void setSelectedCategoryById(String categoryId) {
+        for (int i = 0; i < categoryList.size(); i++) {
+            if (categoryList.get(i).getId().equals(categoryId)) {
+                setSelectedPosition(i);
+                break;
+            }
+        }
     }
 
     @NonNull
@@ -35,7 +63,23 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
         holder.tvCategoryName.setText(category.getName());
         holder.ivCategoryIcon.setImageResource(category.getIconResId());
 
-        // TODO: Xử lý click item Category ở đây để lọc danh sách sản phẩm
+        // Highlight selected category
+        if (position == selectedPosition) {
+            holder.itemView.setBackgroundResource(R.drawable.bg_category_selected);
+        } else {
+            holder.itemView.setBackgroundResource(R.drawable.bg_category_default);
+        }
+
+        holder.itemView.setOnClickListener(v -> {
+            int previousSelected = selectedPosition;
+            selectedPosition = position;
+            notifyItemChanged(previousSelected);
+            notifyItemChanged(selectedPosition);
+            
+            if (onCategoryClickListener != null) {
+                onCategoryClickListener.onCategoryClick(category);
+            }
+        });
     }
 
     @Override

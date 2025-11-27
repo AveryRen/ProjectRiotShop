@@ -39,6 +39,7 @@
         app:headerLayout="@layout/nav_header_main"
         app:itemIconTint="@color/riot_gold_accent"
         app:itemTextColor="@color/riot_text_light"
+        app:itemIconSize="24dp"
         app:menu="@menu/activity_home_drawer" />
 
 </androidx.drawerlayout.widget.DrawerLayout>

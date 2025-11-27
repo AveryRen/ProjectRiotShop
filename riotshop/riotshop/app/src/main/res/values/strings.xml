@@ -23,7 +23,9 @@
     <string name="title_main_functions">Chức Năng Chính</string>
     <string name="menu_home">Trang Chủ</string>
     <string name="menu_cart">Giỏ Hàng</string>
+    <string name="menu_favorite">Yêu Thích</string>
     <string name="menu_history">Lịch Sử Đơn Hàng</string>
+    <string name="menu_purchased_accounts">Tài Khoản Đã Mua</string>
     <string name="menu_deposit">Nạp Tiền</string>
     <string name="menu_profile">Thông Tin Cá Nhân</string>
     <string name="menu_logout">Đăng Xuất</string>
