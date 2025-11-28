@@ -11,6 +11,8 @@ using Swashbuckle.AspNetCore.SwaggerGen;
 using System.Linq;
 using Microsoft.AspNetCore.Authorization;
 using RiotShopBackEnd.Filters;
+using System.Collections.Generic;
+using CloudinaryDotNet;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -75,6 +77,15 @@ if (!string.IsNullOrEmpty(connectionString))
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IJwtService, JwtService>();
 
+// Add Cloudinary
+var cloudinarySettings = builder.Configuration.GetSection("Cloudinary");
+var cloudinaryAccount = new CloudinaryDotNet.Account(
+    cloudinarySettings["CloudName"],
+    cloudinarySettings["ApiKey"],
+    cloudinarySettings["ApiSecret"]
+);
+builder.Services.AddSingleton(new CloudinaryDotNet.Cloudinary(cloudinaryAccount));
+
 // Configure JWT Authentication
 var jwtSettings = builder.Configuration.GetSection("JwtSettings");
 var secretKey = jwtSettings["SecretKey"] ?? "YourSuperSecretKeyForJWTTokenGeneration2024!RiotShopBackend";
@@ -126,19 +137,38 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 // Thứ tự middleware theo best practice
 
+// 0. Create uploads directory structure
+var uploadsPath = Path.Combine(builder.Environment.ContentRootPath, "uploads");
+if (!Directory.Exists(uploadsPath))
+{
+    Directory.CreateDirectory(uploadsPath);
+}
+
+var imagesPath = Path.Combine(uploadsPath, "images");
+if (!Directory.Exists(imagesPath))
+{
+    Directory.CreateDirectory(imagesPath);
+}
+
+var avatarsPath = Path.Combine(uploadsPath, "avatars");
+if (!Directory.Exists(avatarsPath))
+{
+    Directory.CreateDirectory(avatarsPath);
+}
+
+// 1. Static files for uploaded images (serve from uploads folder)
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new Microsoft.Extensions.FileProviders.PhysicalFileProvider(uploadsPath),
+    RequestPath = "/uploads"
+});
+
 // 1. CORS
 app.UseCors("AllowAndroidApp");
 
-// 2. Middleware để đảm bảo token có prefix "Bearer" và redirect /swagger/index.html về /swagger
+// 2. Middleware để đảm bảo token có prefix "Bearer"
 app.Use(async (context, next) =>
 {
-    // Redirect /swagger/index.html về /swagger
-    if (context.Request.Path == "/swagger/index.html")
-    {
-        context.Response.Redirect("/swagger", permanent: false);
-        return;
-    }
-    
     var token = context.Request.Headers["Authorization"].FirstOrDefault();
     if (!string.IsNullOrEmpty(token) && !token.StartsWith("Bearer "))
     {
@@ -152,18 +182,21 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 // 4. Swagger và SwaggerUI - đặt SAU UseAuthentication và UseAuthorization
-app.UseSwagger();
-app.UseSwaggerUI(c =>
+if (app.Environment.IsDevelopment())
 {
-    c.SwaggerEndpoint("/swagger/v1/swagger.json", "RiotShop API v1");
-    c.RoutePrefix = "swagger"; // Swagger UI ở /swagger (truy cập: https://localhost:5001/swagger)
-    c.DisplayRequestDuration();
-    c.EnableDeepLinking();
-    c.EnableFilter();
-    c.ShowExtensions();
-    c.EnableValidator();
-    c.DocExpansion(Swashbuckle.AspNetCore.SwaggerUI.DocExpansion.List);
-});
+    app.UseSwagger();
+    app.UseSwaggerUI(c =>
+    {
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "RiotShop API v1");
+        c.RoutePrefix = "swagger"; // Swagger UI ở /swagger (truy cập: https://localhost:5001/swagger)
+        c.DisplayRequestDuration();
+        c.EnableDeepLinking();
+        c.EnableFilter();
+        c.ShowExtensions();
+        c.EnableValidator();
+        c.DocExpansion(Swashbuckle.AspNetCore.SwaggerUI.DocExpansion.List);
+    });
+}
 
 // 5. Map controllers với prefix /api
 app.MapControllers();

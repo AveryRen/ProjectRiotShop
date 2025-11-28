@@ -7,6 +7,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -68,10 +70,42 @@ public class AdminProductListActivity extends AppCompatActivity implements Produ
     
     @Override
     public void onItemClick(Product product) {
-        // Navigate to product detail
-        Intent intent = new Intent(this, ProductDetailActivity.class);
-        intent.putExtra("templateId", product.getTemplateId());
-        startActivity(intent);
+        // Show options: Edit or Manage Accounts
+        new androidx.appcompat.app.AlertDialog.Builder(this)
+            .setTitle("Chọn thao tác")
+            .setItems(new String[]{"Sửa sản phẩm", "Quản lý tài khoản"}, (dialog, which) -> {
+                if (which == 0) {
+                    Intent intent = new Intent(this, AdminEditProductActivity.class);
+                    intent.putExtra("templateId", product.getTemplateId());
+                    startActivity(intent);
+                } else {
+                    Intent intent = new Intent(this, AdminAccountListActivity.class);
+                    intent.putExtra("templateId", product.getTemplateId());
+                    startActivity(intent);
+                }
+            })
+            .show();
+    }
+    
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_admin_add, menu);
+        return true;
+    }
+    
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.menu_add) {
+            startActivity(new Intent(this, AdminAddProductActivity.class));
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+    
+    @Override
+    protected void onResume() {
+        super.onResume();
+        loadProducts(); // Reload when coming back from edit
     }
 
     private void loadProducts() {

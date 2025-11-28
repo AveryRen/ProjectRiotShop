@@ -6,6 +6,13 @@
     <color name="riot_text_light">#FFFFFF</color>
     <color name="riot_text_hint">#AAAAAA</color>
     <color name="riot_black_light">#222222</color>
+    <color name="error">#F44336</color>
+    <color name="success">#4CAF50</color>
+    
+    <!-- Input colors -->
+    <color name="input_background">#FFFFFF</color>
+    <color name="input_text">#000000</color>
+    <color name="input_text_hint">#757575</color>
 
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>

@@ -24,4 +24,17 @@
         <item name="windowNoTitle">true</item>
         <item name="colorPrimary">@color/riot_black_dark</item>
     </style>
+
+    <!-- Style for admin text inputs -->
+    <style name="AdminTextInputLayout" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="boxStrokeColor">@color/riot_gold_accent</item>
+        <item name="hintTextColor">@color/riot_gold_accent</item>
+        <item name="boxBackgroundColor">@color/input_background</item>
+    </style>
+
+    <style name="AdminTextInputEditText" parent="Widget.MaterialComponents.TextInputEditText.OutlinedBox">
+        <item name="android:textColor">@color/input_text</item>
+        <item name="android:textColorHint">@color/input_text_hint</item>
+        <item name="android:background">@color/input_background</item>
+    </style>
 </resources>

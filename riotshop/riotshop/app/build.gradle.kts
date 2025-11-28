@@ -38,6 +38,7 @@ dependencies {
     implementation(libs.material)
     implementation(libs.activity)
     implementation(libs.constraintlayout)
+    implementation(libs.cardview)
     
     // Retrofit for API calls
     implementation(libs.retrofit)
@@ -45,6 +46,9 @@ dependencies {
     implementation(libs.okhttp)
     implementation(libs.okhttp.logging)
     implementation(libs.gson)
+    
+    // Picasso for image loading
+    implementation(libs.picasso)
     
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)

@@ -5,7 +5,10 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -17,7 +20,6 @@ import com.example.riotshop.api.RetrofitClient;
 import com.example.riotshop.models.ApiResponse;
 import com.example.riotshop.models.UserResponse;
 import com.example.riotshop.utils.SharedPrefManager;
-import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -55,6 +57,12 @@ public class AdminUserListActivity extends AppCompatActivity implements AdminUse
         setupRecyclerView();
         loadUsers();
     }
+    
+    @Override
+    protected void onResume() {
+        super.onResume();
+        loadUsers(); // Reload when coming back from edit
+    }
 
     private void setupRecyclerView() {
         userAdapter = new AdminUserAdapter(this, userList);
@@ -65,8 +73,25 @@ public class AdminUserListActivity extends AppCompatActivity implements AdminUse
     
     @Override
     public void onUserClick(UserResponse user) {
-        // TODO: Navigate to user detail or show user info dialog
-        Toast.makeText(this, "User: " + user.getUsername(), Toast.LENGTH_SHORT).show();
+        // Navigate to edit user
+        Intent intent = new Intent(this, AdminEditUserActivity.class);
+        intent.putExtra("userId", user.getUserId());
+        startActivity(intent);
+    }
+    
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_admin_add, menu);
+        return true;
+    }
+    
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.menu_add) {
+            startActivity(new Intent(this, AdminAddUserActivity.class));
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private void loadUsers() {
@@ -78,26 +103,16 @@ public class AdminUserListActivity extends AppCompatActivity implements AdminUse
         }
 
         ApiService apiService = RetrofitClient.getInstance().getApiService();
-        Call<ApiResponse<List<Object>>> call = apiService.getAdminUsers("Bearer " + token, 1, 20);
+        Call<ApiResponse<List<UserResponse>>> call = apiService.getAdminUsers("Bearer " + token, 1, 20);
         
-        call.enqueue(new Callback<ApiResponse<List<Object>>>() {
+        call.enqueue(new Callback<ApiResponse<List<UserResponse>>>() {
             @Override
-            public void onResponse(Call<ApiResponse<List<Object>>> call, Response<ApiResponse<List<Object>>> response) {
+            public void onResponse(Call<ApiResponse<List<UserResponse>>> call, Response<ApiResponse<List<UserResponse>>> response) {
                 if (response.isSuccessful() && response.body() != null && response.body().isSuccess()) {
-                    List<Object> users = response.body().getData();
+                    List<UserResponse> users = response.body().getData();
                     if (users != null && !users.isEmpty()) {
-                        // Parse Object list to UserResponse list using Gson
                         userList.clear();
-                        Gson gson = new Gson();
-                        for (Object obj : users) {
-                            try {
-                                String json = gson.toJson(obj);
-                                UserResponse user = gson.fromJson(json, UserResponse.class);
-                                userList.add(user);
-                            } catch (Exception e) {
-                                // Skip invalid users
-                            }
-                        }
+                        userList.addAll(users);
                         userAdapter.notifyDataSetChanged();
                         if (userList.isEmpty()) {
                             showEmptyUsers();
@@ -114,7 +129,7 @@ public class AdminUserListActivity extends AppCompatActivity implements AdminUse
             }
 
             @Override
-            public void onFailure(Call<ApiResponse<List<Object>>> call, Throwable t) {
+            public void onFailure(Call<ApiResponse<List<UserResponse>>> call, Throwable t) {
                 Toast.makeText(AdminUserListActivity.this, "Lỗi kết nối: " + t.getMessage(), Toast.LENGTH_SHORT).show();
                 showEmptyUsers();
             }

@@ -53,5 +53,7 @@ public class RetrofitClient {
     public ApiService getApiService() {
         return apiService;
     }
+    
+    public static String BASE_URL = Constants.BASE_URL;
 }
 

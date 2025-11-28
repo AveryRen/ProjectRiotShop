@@ -66,8 +66,8 @@ public class AdminOrderListActivity extends AppCompatActivity implements OrderAd
     
     @Override
     public void onOrderClick(Order order) {
-        // Navigate to order detail
-        Intent intent = new Intent(this, OrderDetailActivity.class);
+        // Navigate to admin order detail
+        Intent intent = new Intent(this, AdminOrderDetailActivity.class);
         intent.putExtra("orderId", order.getOrderId());
         startActivity(intent);
     }

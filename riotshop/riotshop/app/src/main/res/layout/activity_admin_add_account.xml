@@ -31,60 +31,22 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <ImageView
-                android:id="@+id/iv_product_image"
-                android:layout_width="match_parent"
-                android:layout_height="225dp"
-                android:layout_marginStart="0dp"
-                android:layout_marginEnd="0dp"
-                android:layout_marginTop="0dp"
-                android:layout_marginBottom="8dp"
-                android:background="@color/riot_black_light"
-                android:scaleType="centerCrop"
-                android:contentDescription="Product Image" />
-
-            <Button
-                android:id="@+id/btn_upload_image"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginBottom="16dp"
-                android:text="Upload Ảnh" />
-
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
-                android:hint="Chọn Game *"
-                app:boxBackgroundColor="@color/riot_gold_accent"
-                app:hintTextColor="@color/riot_black_dark"
-                app:boxStrokeColor="@color/riot_black_dark">
-
-                <Spinner
-                    android:id="@+id/spinner_game"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@color/riot_gold_accent"
-                    android:textColor="@color/riot_black_dark" />
-
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:hint="Tiêu đề *"
+                android:hint="Tên đăng nhập *"
+                style="@style/AdminTextInputLayout"
                 app:boxBackgroundColor="@color/input_background"
                 app:hintTextColor="@color/riot_gold_accent"
                 app:boxStrokeColor="@color/riot_gold_accent">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/et_title"
+                    android:id="@+id/et_account_username"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="text"
-                    android:textColor="@color/input_text"
-                    android:textColorHint="@color/input_text_hint" />
+                    style="@style/AdminTextInputEditText" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -92,20 +54,18 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
-                android:hint="Mô tả"
+                android:hint="Mật khẩu *"
+                style="@style/AdminTextInputLayout"
                 app:boxBackgroundColor="@color/input_background"
                 app:hintTextColor="@color/riot_gold_accent"
                 app:boxStrokeColor="@color/riot_gold_accent">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/et_description"
+                    android:id="@+id/et_account_password"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="textMultiLine"
-                    android:minLines="3"
-                    android:maxLines="5"
-                    android:textColor="@color/input_text"
-                    android:textColorHint="@color/input_text_hint" />
+                    android:inputType="textPassword"
+                    style="@style/AdminTextInputEditText" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -113,92 +73,72 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
-                android:hint="Giá cơ bản *"
+                android:hint="Riot ID"
+                style="@style/AdminTextInputLayout"
                 app:boxBackgroundColor="@color/input_background"
                 app:hintTextColor="@color/riot_gold_accent"
                 app:boxStrokeColor="@color/riot_gold_accent">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/et_base_price"
+                    android:id="@+id/et_riot_id"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="text"
+                    style="@style/AdminTextInputEditText" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:hint="Email khôi phục"
+                style="@style/AdminTextInputLayout"
+                app:boxBackgroundColor="@color/input_background"
+                app:hintTextColor="@color/riot_gold_accent"
+                app:boxStrokeColor="@color/riot_gold_accent">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/et_recovery_email"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textEmailAddress"
+                    style="@style/AdminTextInputEditText" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:hint="Giá gốc"
+                style="@style/AdminTextInputLayout"
+                app:boxBackgroundColor="@color/input_background"
+                app:hintTextColor="@color/riot_gold_accent"
+                app:boxStrokeColor="@color/riot_gold_accent">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/et_original_price"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="numberDecimal"
-                    android:textColor="@color/input_text"
-                    android:textColorHint="@color/input_text_hint" />
-
-            </com.google.android.material.textfield.TextInputLayout>
-
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:hint="Tag Rank"
-                app:boxBackgroundColor="@color/input_background"
-                app:hintTextColor="@color/riot_gold_accent"
-                app:boxStrokeColor="@color/riot_gold_accent">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/et_tag_rank"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:inputType="text"
-                    android:textColor="@color/input_text"
-                    android:textColorHint="@color/input_text_hint" />
-
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:hint="Tag Skins"
-                app:boxBackgroundColor="@color/input_background"
-                app:hintTextColor="@color/riot_gold_accent"
-                app:boxStrokeColor="@color/riot_gold_accent">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/et_tag_skins"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:inputType="text"
-                    android:textColor="@color/input_text"
-                    android:textColorHint="@color/input_text_hint" />
-
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:hint="Tag Collection"
-                app:boxBackgroundColor="@color/input_background"
-                app:hintTextColor="@color/riot_gold_accent"
-                app:boxStrokeColor="@color/riot_gold_accent">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/et_tag_collection"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:inputType="text"
-                    android:textColor="@color/input_text"
-                    android:textColorHint="@color/input_text_hint" />
+                    style="@style/AdminTextInputEditText" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.checkbox.MaterialCheckBox
-                android:id="@+id/cb_is_featured"
+                android:id="@+id/cb_is_drop_mail"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
-                android:text="Sản phẩm nổi bật"
+                android:text="Drop Mail"
                 android:textColor="@color/riot_text_light" />
 
             <Button
                 android:id="@+id/btn_create"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Tạo sản phẩm"
+                android:text="Tạo tài khoản"
                 android:backgroundTint="@color/riot_gold_accent" />
 
         </LinearLayout>

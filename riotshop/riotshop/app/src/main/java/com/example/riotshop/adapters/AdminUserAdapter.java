@@ -48,12 +48,20 @@ public class AdminUserAdapter extends RecyclerView.Adapter<AdminUserAdapter.User
 
         holder.tvUsername.setText(user.getUsername());
         holder.tvEmail.setText(user.getEmail() != null ? user.getEmail() : "N/A");
-        holder.tvFullName.setText(user.getFullName() != null ? user.getFullName() : "N/A");
+        
+        // Show full name only if not empty
+        String fullName = user.getFullName();
+        if (fullName != null && !fullName.trim().isEmpty()) {
+            holder.tvFullName.setText(fullName);
+            holder.tvFullName.setVisibility(android.view.View.VISIBLE);
+        } else {
+            holder.tvFullName.setVisibility(android.view.View.GONE);
+        }
+        
         holder.tvBalance.setText(FormatUtils.formatPrice(user.getBalance()));
-        holder.tvIsAdmin.setText(user.isAdmin() ? "Admin" : "User");
-        holder.tvIsAdmin.setTextColor(user.isAdmin() ? 
-            context.getResources().getColor(R.color.riot_gold_accent) : 
-            context.getResources().getColor(R.color.riot_text_light));
+        holder.tvIsAdmin.setText(user.isAdmin() ? "Administrator" : "User");
+        // Set text color for admin badge - white text on yellow background for better contrast
+        holder.tvIsAdmin.setTextColor(context.getResources().getColor(R.color.riot_text_light));
 
         holder.itemView.setOnClickListener(v -> {
             if (listener != null) {

@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="8dp"
-    app:cardBackgroundColor="@color/riot_black_light"
+    app:cardBackgroundColor="#2A2A2A"
     app:cardCornerRadius="12dp"
     app:cardElevation="4dp">
 
@@ -35,12 +35,13 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Admin"
-                android:textColor="@color/riot_gold_accent"
+                android:textColor="@color/riot_text_light"
                 android:textSize="12sp"
+                android:textStyle="bold"
                 android:background="@drawable/bg_category_selected"
-                android:padding="4dp"
-                android:paddingLeft="8dp"
-                android:paddingRight="8dp" />
+                android:padding="6dp"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp" />
 
         </LinearLayout>
 
@@ -48,9 +49,9 @@
             android:id="@+id/tv_user_email"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
+            android:layout_marginTop="6dp"
             android:text="email@example.com"
-            android:textColor="@color/riot_text_light"
+            android:textColor="#E0E0E0"
             android:textSize="14sp" />
 
         <TextView
@@ -59,7 +60,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
             android:text="Full Name"
-            android:textColor="@color/riot_text_light"
+            android:textColor="#E0E0E0"
             android:textSize="14sp" />
 
         <TextView

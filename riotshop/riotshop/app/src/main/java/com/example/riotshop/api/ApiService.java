@@ -134,7 +134,7 @@ public interface ApiService {
     Call<ApiResponse<Object>> getAdminOrderById(@Header("Authorization") String token, @Path("id") int id);
     
     @GET("admin/users")
-    Call<ApiResponse<List<Object>>> getAdminUsers(
+    Call<ApiResponse<List<UserResponse>>> getAdminUsers(
             @Header("Authorization") String token,
             @Query("page") Integer page,
             @Query("pageSize") Integer pageSize
@@ -151,5 +151,50 @@ public interface ApiService {
     
     @DELETE("admin/products/{id}")
     Call<ApiResponse<Object>> deleteProduct(@Header("Authorization") String token, @Path("id") int id);
+    
+    // Admin Users CRUD
+    @POST("admin/users")
+    Call<ApiResponse<Object>> createUser(@Header("Authorization") String token, @Body com.example.riotshop.models.CreateUserRequest request);
+    
+    @PUT("admin/users/{id}")
+    Call<ApiResponse<Object>> updateUser(@Header("Authorization") String token, @Path("id") int id, @Body com.example.riotshop.models.UpdateUserAdminRequest request);
+    
+    @DELETE("admin/users/{id}")
+    Call<ApiResponse<Object>> deleteUser(@Header("Authorization") String token, @Path("id") int id);
+    
+    @PUT("admin/users/{id}/toggle-admin")
+    Call<ApiResponse<UserResponse>> toggleAdmin(@Header("Authorization") String token, @Path("id") int id);
+    
+    // Admin Orders
+    @DELETE("admin/orders/{id}")
+    Call<ApiResponse<Object>> deleteOrder(@Header("Authorization") String token, @Path("id") int id);
+    
+    // Admin Account Details (tài khoản trong sản phẩm)
+    @GET("admin/products/{templateId}/accounts")
+    Call<ApiResponse<List<Object>>> getProductAccounts(@Header("Authorization") String token, @Path("templateId") int templateId);
+    
+    @POST("admin/products/{templateId}/accounts")
+    Call<ApiResponse<Object>> createAccount(@Header("Authorization") String token, @Path("templateId") int templateId, @Body com.example.riotshop.models.CreateAccountRequest request);
+    
+    @PUT("admin/accounts/{id}")
+    Call<ApiResponse<Object>> updateAccount(@Header("Authorization") String token, @Path("id") int id, @Body com.example.riotshop.models.UpdateAccountRequest request);
+    
+    @DELETE("admin/accounts/{id}")
+    Call<ApiResponse<Object>> deleteAccount(@Header("Authorization") String token, @Path("id") int id);
+    
+    @POST("admin/products/{templateId}/accounts/bulk")
+    Call<ApiResponse<Object>> bulkCreateAccounts(@Header("Authorization") String token, @Path("templateId") int templateId, @Body com.example.riotshop.models.BulkCreateAccountsRequest request);
+    
+    // File Upload
+    @POST("fileupload/image")
+    Call<ApiResponse<Object>> uploadImage(@Header("Authorization") String token, @Body okhttp3.RequestBody file);
+
+    // Multipart file upload
+    @POST("fileupload/image")
+    okhttp3.Call uploadImageMultipart(@Header("Authorization") String token, @Body okhttp3.RequestBody requestBody);
+    
+    // Avatar Upload (for users)
+    @POST("fileupload/avatar")
+    okhttp3.Call uploadAvatar(@Header("Authorization") String token, @Body okhttp3.RequestBody requestBody);
 }
 
