@@ -4,10 +4,12 @@
     <color name="riot_red_primary">#E3003B</color>
     <color name="riot_gold_accent">#FFC72C</color>
     <color name="riot_text_light">#FFFFFF</color>
+    <color name="riot_text_secondary">#AAAAAA</color>
     <color name="riot_text_hint">#AAAAAA</color>
     <color name="riot_black_light">#222222</color>
     <color name="error">#F44336</color>
     <color name="success">#4CAF50</color>
+    <color name="warning">#FF9800</color>
     
     <!-- Input colors -->
     <color name="input_background">#FFFFFF</color>

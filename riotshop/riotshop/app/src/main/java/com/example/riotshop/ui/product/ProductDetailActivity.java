@@ -2,6 +2,7 @@ package com.example.riotshop.ui.product;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -42,7 +43,7 @@ public class ProductDetailActivity extends AppCompatActivity implements ProductA
 
     private ImageView ivProductImage;
     private ImageButton btnFavorite;
-    private TextView tvProductName, tvProductPrice, tvProductDescription, tvNoReviews;
+    private TextView tvProductName, tvProductPrice, tvProductDescription, tvNoReviews, tvProductQuantity;
     private Button btnBuyNow, btnAddToCart, btnAddReview;
     private Toolbar toolbar;
     private RecyclerView rvRelatedProducts, rvReviews;
@@ -68,6 +69,7 @@ public class ProductDetailActivity extends AppCompatActivity implements ProductA
         tvProductName = findViewById(R.id.tv_product_name_detail);
         tvProductPrice = findViewById(R.id.tv_product_price_detail);
         tvProductDescription = findViewById(R.id.tv_product_description_detail);
+        tvProductQuantity = findViewById(R.id.tv_product_quantity);
         btnBuyNow = findViewById(R.id.btn_buy_now);
         btnAddToCart = findViewById(R.id.btn_add_to_cart);
         btnFavorite = findViewById(R.id.btn_favorite);
@@ -152,6 +154,21 @@ public class ProductDetailActivity extends AppCompatActivity implements ProductA
         tvProductPrice.setText(FormatUtils.formatPrice(product.getBasePrice()));
         tvProductDescription.setText(product.getDescription() != null ? product.getDescription() : "");
         ivProductImage.setImageResource(R.drawable.placeholder_account);
+        
+        // Display inventory quantity
+        if (product.getInventory() != null) {
+            int quantity = product.getInventory().getQuantityAvailable();
+            if (quantity > 0) {
+                tvProductQuantity.setText("Còn lại: " + quantity + " tài khoản");
+                tvProductQuantity.setTextColor(ContextCompat.getColor(this, R.color.riot_text_secondary));
+            } else {
+                tvProductQuantity.setText("Hết hàng");
+                tvProductQuantity.setTextColor(ContextCompat.getColor(this, R.color.error));
+            }
+            tvProductQuantity.setVisibility(View.VISIBLE);
+        } else {
+            tvProductQuantity.setVisibility(View.GONE);
+        }
     }
     
     private void loadRelatedProducts() {
@@ -196,9 +213,65 @@ public class ProductDetailActivity extends AppCompatActivity implements ProductA
     }
     
     private void setupReviewsRecyclerView() {
-        reviewAdapter = new ReviewAdapter(this, reviews);
+        int currentUserId = SharedPrefManager.getInstance(this).getUserId();
+        reviewAdapter = new ReviewAdapter(this, reviews, currentUserId);
+        reviewAdapter.setOnReviewActionListener(new ReviewAdapter.OnReviewActionListener() {
+            @Override
+            public void onEditReview(Review review) {
+                // Open AddCommentActivity in edit mode
+                Intent intent = new Intent(ProductDetailActivity.this, AddCommentActivity.class);
+                intent.putExtra("templateId", templateId);
+                intent.putExtra("reviewId", review.getReviewId());
+                intent.putExtra("rating", review.getRating());
+                intent.putExtra("comment", review.getComment());
+                startActivityForResult(intent, 100);
+            }
+
+            @Override
+            public void onDeleteReview(Review review) {
+                // Show confirmation dialog
+                new android.app.AlertDialog.Builder(ProductDetailActivity.this)
+                    .setTitle("Xóa đánh giá")
+                    .setMessage("Bạn có chắc chắn muốn xóa đánh giá này?")
+                    .setPositiveButton("Xóa", (dialog, which) -> deleteReview(review.getReviewId()))
+                    .setNegativeButton("Hủy", null)
+                    .show();
+            }
+        });
         rvReviews.setLayoutManager(new LinearLayoutManager(this));
         rvReviews.setAdapter(reviewAdapter);
+    }
+    
+    private void deleteReview(int reviewId) {
+        String token = SharedPrefManager.getInstance(this).getToken();
+        if (token == null) {
+            Toast.makeText(this, "Vui lòng đăng nhập", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        ApiService apiService = RetrofitClient.getInstance().getApiService();
+        Call<ApiResponse<Object>> call = apiService.deleteReview("Bearer " + token, reviewId);
+
+        call.enqueue(new Callback<ApiResponse<Object>>() {
+            @Override
+            public void onResponse(Call<ApiResponse<Object>> call, Response<ApiResponse<Object>> response) {
+                if (response.isSuccessful() && response.body() != null && response.body().isSuccess()) {
+                    Toast.makeText(ProductDetailActivity.this, "Đã xóa đánh giá", Toast.LENGTH_SHORT).show();
+                    loadReviews(); // Reload reviews
+                } else {
+                    String errorMsg = "Lỗi khi xóa đánh giá";
+                    if (response.body() != null && response.body().getMessage() != null) {
+                        errorMsg = response.body().getMessage();
+                    }
+                    Toast.makeText(ProductDetailActivity.this, errorMsg, Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ApiResponse<Object>> call, Throwable t) {
+                Toast.makeText(ProductDetailActivity.this, "Lỗi kết nối: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
     
     private void checkFavoriteStatus() {
@@ -302,7 +375,7 @@ public class ProductDetailActivity extends AppCompatActivity implements ProductA
                     List<Review> reviewList = response.body().getData();
                     if (reviewList != null && !reviewList.isEmpty()) {
                         reviews.clear();
-                        reviews.addAll(reviewList); // Backend đã filter chỉ trả về approved reviews
+                        reviews.addAll(reviewList); // Show all reviews (auto approved)
                         reviewAdapter.notifyDataSetChanged();
                         hideNoReviews();
                     } else {

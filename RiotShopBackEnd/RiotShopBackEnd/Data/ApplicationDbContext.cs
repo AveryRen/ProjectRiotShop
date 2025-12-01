@@ -19,6 +19,7 @@ public class ApplicationDbContext : DbContext
     public DbSet<Wishlist> Wishlist { get; set; }
     public DbSet<CartItem> CartItems { get; set; }
     public DbSet<UserAddress> UserAddresses { get; set; }
+    public DbSet<PaymentTransaction> PaymentTransactions { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -123,5 +124,13 @@ public class ApplicationDbContext : DbContext
         // Configure table names
         modelBuilder.Entity<CartItem>().ToTable("Cart_Items");
         modelBuilder.Entity<UserAddress>().ToTable("User_Addresses");
+        modelBuilder.Entity<PaymentTransaction>().ToTable("Payment_Transactions");
+
+        // Configure PaymentTransaction foreign key
+        modelBuilder.Entity<PaymentTransaction>()
+            .HasOne(pt => pt.User)
+            .WithMany()
+            .HasForeignKey(pt => pt.UserId)
+            .OnDelete(DeleteBehavior.Restrict);
     }
 }

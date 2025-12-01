@@ -37,7 +37,28 @@
                 android:layout_height="wrap_content"
                 android:textColor="@color/riot_text_hint"
                 android:textSize="12sp"
+                android:layout_marginEnd="8dp"
                 tools:text="01/01/2024" />
+
+            <ImageButton
+                android:id="@+id/btn_edit_review"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:src="@android:drawable/ic_menu_edit"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="Sửa đánh giá"
+                android:visibility="gone"
+                android:layout_marginEnd="4dp" />
+
+            <ImageButton
+                android:id="@+id/btn_delete_review"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:src="@android:drawable/ic_menu_delete"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="Xóa đánh giá"
+                android:visibility="gone"
+                android:tint="@color/error" />
         </LinearLayout>
 
         <RatingBar

@@ -194,6 +194,9 @@ public class CheckoutActivity extends AppCompatActivity {
             public void onResponse(Call<ApiResponse<Order>> call, Response<ApiResponse<Order>> response) {
                 btnPlaceOrder.setEnabled(true);
                 if (response.isSuccessful() && response.body() != null && response.body().isSuccess()) {
+                    // Clear cart after successful order
+                    clearCart(token);
+                    
                     Toast.makeText(CheckoutActivity.this, "Đặt hàng thành công!", Toast.LENGTH_SHORT).show();
                     
                     // Navigate đến trang tài khoản đã mua
@@ -214,6 +217,25 @@ public class CheckoutActivity extends AppCompatActivity {
             public void onFailure(Call<ApiResponse<Order>> call, Throwable t) {
                 btnPlaceOrder.setEnabled(true);
                 Toast.makeText(CheckoutActivity.this, "Lỗi kết nối: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void clearCart(String token) {
+        ApiService apiService = RetrofitClient.getInstance().getApiService();
+        Call<ApiResponse<Object>> call = apiService.clearCart("Bearer " + token);
+        
+        call.enqueue(new Callback<ApiResponse<Object>>() {
+            @Override
+            public void onResponse(Call<ApiResponse<Object>> call, Response<ApiResponse<Object>> response) {
+                // Cart cleared successfully (silent success)
+                // Log if needed for debugging
+            }
+
+            @Override
+            public void onFailure(Call<ApiResponse<Object>> call, Throwable t) {
+                // Silent failure - order already succeeded, cart clear is secondary
+                // Log if needed for debugging
             }
         });
     }

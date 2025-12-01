@@ -52,6 +52,9 @@ public interface ApiService {
     @GET("Users/me")
     Call<ApiResponse<UserResponse>> getCurrentUser(@Header("Authorization") String token);
     
+    @GET("Users/{id}")
+    Call<ApiResponse<UserResponse>> getUserById(@Header("Authorization") String token, @Path("id") int id);
+    
     @PUT("Users/me")
     Call<ApiResponse<UserResponse>> updateCurrentUser(@Header("Authorization") String token, @Body com.example.riotshop.models.UpdateUserRequest request);
     
@@ -103,6 +106,12 @@ public interface ApiService {
     
     @POST("Reviews")
     Call<ApiResponse<com.example.riotshop.models.Review>> createReview(@Header("Authorization") String token, @Body com.example.riotshop.models.CreateReviewRequest request);
+    
+    @PUT("Reviews/{id}")
+    Call<ApiResponse<com.example.riotshop.models.Review>> updateReview(@Header("Authorization") String token, @Path("id") int id, @Body com.example.riotshop.models.UpdateReviewRequest request);
+    
+    @DELETE("Reviews/{id}")
+    Call<ApiResponse<Object>> deleteReview(@Header("Authorization") String token, @Path("id") int id);
     
     // Addresses endpoints
     @GET("Addresses/me")
@@ -196,5 +205,15 @@ public interface ApiService {
     // Avatar Upload (for users)
     @POST("fileupload/avatar")
     okhttp3.Call uploadAvatar(@Header("Authorization") String token, @Body okhttp3.RequestBody requestBody);
+    
+    // Payment endpoints
+    @POST("Payment/create-intent")
+    Call<ApiResponse<Object>> createPaymentIntent(@Header("Authorization") String token, @Body com.example.riotshop.models.CreatePaymentIntentRequest request);
+    
+    @POST("Payment/confirm")
+    Call<ApiResponse<Object>> confirmPayment(@Header("Authorization") String token, @Body com.example.riotshop.models.ConfirmPaymentRequest request);
+    
+    @GET("Payment/transactions")
+    Call<ApiResponse<List<Object>>> getPaymentTransactions(@Header("Authorization") String token, @Query("page") Integer page, @Query("pageSize") Integer pageSize);
 }
 

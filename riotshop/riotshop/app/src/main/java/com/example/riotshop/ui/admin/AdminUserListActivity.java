@@ -123,7 +123,13 @@ public class AdminUserListActivity extends AppCompatActivity implements AdminUse
                         showEmptyUsers();
                     }
                 } else {
-                    Toast.makeText(AdminUserListActivity.this, "Lỗi khi tải người dùng: " + response.message(), Toast.LENGTH_SHORT).show();
+                    String errorMsg = "Lỗi khi tải người dùng";
+                    if (response.body() != null && response.body().getMessage() != null) {
+                        errorMsg = response.body().getMessage();
+                    } else if (response.code() == 403) {
+                        errorMsg = "Bạn không có quyền truy cập";
+                    }
+                    Toast.makeText(AdminUserListActivity.this, errorMsg, Toast.LENGTH_SHORT).show();
                     showEmptyUsers();
                 }
             }

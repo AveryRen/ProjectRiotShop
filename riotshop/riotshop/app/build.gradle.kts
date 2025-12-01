@@ -50,6 +50,9 @@ dependencies {
     // Picasso for image loading
     implementation(libs.picasso)
     
+    // Stripe for payments
+    implementation(libs.stripe)
+    
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)

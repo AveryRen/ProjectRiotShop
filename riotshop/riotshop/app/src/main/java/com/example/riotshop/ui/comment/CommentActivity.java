@@ -18,6 +18,7 @@ import com.example.riotshop.api.ApiService;
 import com.example.riotshop.api.RetrofitClient;
 import com.example.riotshop.models.ApiResponse;
 import com.example.riotshop.models.Review;
+import com.example.riotshop.utils.SharedPrefManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -70,9 +71,71 @@ public class CommentActivity extends AppCompatActivity {
     }
 
     private void setupRecyclerView() {
-        reviewAdapter = new ReviewAdapter(this, reviewList);
+        int currentUserId = SharedPrefManager.getInstance(this).getUserId();
+        reviewAdapter = new ReviewAdapter(this, reviewList, currentUserId);
+        reviewAdapter.setOnReviewActionListener(new ReviewAdapter.OnReviewActionListener() {
+            @Override
+            public void onEditReview(Review review) {
+                Intent intent = new Intent(CommentActivity.this, AddCommentActivity.class);
+                intent.putExtra("templateId", templateId);
+                intent.putExtra("reviewId", review.getReviewId());
+                intent.putExtra("rating", review.getRating());
+                intent.putExtra("comment", review.getComment());
+                startActivityForResult(intent, 100);
+            }
+
+            @Override
+            public void onDeleteReview(Review review) {
+                new android.app.AlertDialog.Builder(CommentActivity.this)
+                    .setTitle("Xóa đánh giá")
+                    .setMessage("Bạn có chắc chắn muốn xóa đánh giá này?")
+                    .setPositiveButton("Xóa", (dialog, which) -> deleteReview(review.getReviewId()))
+                    .setNegativeButton("Hủy", null)
+                    .show();
+            }
+        });
         rvReviews.setLayoutManager(new LinearLayoutManager(this));
         rvReviews.setAdapter(reviewAdapter);
+    }
+    
+    private void deleteReview(int reviewId) {
+        String token = SharedPrefManager.getInstance(this).getToken();
+        if (token == null) {
+            Toast.makeText(this, "Vui lòng đăng nhập", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        ApiService apiService = RetrofitClient.getInstance().getApiService();
+        Call<ApiResponse<Object>> call = apiService.deleteReview("Bearer " + token, reviewId);
+
+        call.enqueue(new Callback<ApiResponse<Object>>() {
+            @Override
+            public void onResponse(Call<ApiResponse<Object>> call, Response<ApiResponse<Object>> response) {
+                if (response.isSuccessful() && response.body() != null && response.body().isSuccess()) {
+                    Toast.makeText(CommentActivity.this, "Đã xóa đánh giá", Toast.LENGTH_SHORT).show();
+                    loadReviews();
+                } else {
+                    String errorMsg = "Lỗi khi xóa đánh giá";
+                    if (response.body() != null && response.body().getMessage() != null) {
+                        errorMsg = response.body().getMessage();
+                    }
+                    Toast.makeText(CommentActivity.this, errorMsg, Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ApiResponse<Object>> call, Throwable t) {
+                Toast.makeText(CommentActivity.this, "Lỗi kết nối: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+    
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 100 && resultCode == RESULT_OK) {
+            loadReviews();
+        }
     }
 
     private void loadReviews() {
@@ -86,12 +149,7 @@ public class CommentActivity extends AppCompatActivity {
                     ApiResponse<List<Review>> apiResponse = response.body();
                     if (apiResponse.isSuccess() && apiResponse.getData() != null && !apiResponse.getData().isEmpty()) {
                         reviewList.clear();
-                        // Only show approved reviews
-                        for (Review review : apiResponse.getData()) {
-                            if (review.isApproved()) {
-                                reviewList.add(review);
-                            }
-                        }
+                        reviewList.addAll(apiResponse.getData()); // Show all reviews (auto approved)
                         reviewAdapter.notifyDataSetChanged();
                         showReviews();
                     } else {

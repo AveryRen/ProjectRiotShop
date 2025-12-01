@@ -38,6 +38,9 @@ public class ProductTemplate {
     
     @SerializedName("gameType")
     private GameType gameType;
+    
+    @SerializedName("inventory")
+    private Inventory inventory;
 
     // Getters
     public int getTemplateId() {
@@ -92,6 +95,41 @@ public class ProductTemplate {
 
     public GameType getGameType() {
         return gameType;
+    }
+    
+    public Inventory getInventory() {
+        return inventory;
+    }
+    
+    // Inner class for Inventory
+    public static class Inventory {
+        @SerializedName("packageId")
+        private int packageId;
+        
+        @SerializedName("quantityAvailable")
+        private int quantityAvailable;
+        
+        @SerializedName("price")
+        private double price;
+        
+        @SerializedName("lastUpdated")
+        private String lastUpdated;
+        
+        public int getPackageId() {
+            return packageId;
+        }
+        
+        public int getQuantityAvailable() {
+            return quantityAvailable;
+        }
+        
+        public double getPrice() {
+            return price;
+        }
+        
+        public String getLastUpdated() {
+            return lastUpdated;
+        }
     }
 }
 

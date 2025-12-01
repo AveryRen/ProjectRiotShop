@@ -79,6 +79,16 @@
             </LinearLayout>
 
             <TextView
+                android:id="@+id/tv_product_quantity"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:paddingHorizontal="16dp"
+                android:textColor="@color/riot_text_secondary"
+                android:textSize="14sp"
+                tools:text="Còn lại: 5 tài khoản" />
+
+            <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"

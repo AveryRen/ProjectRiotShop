@@ -18,7 +18,6 @@ import com.example.riotshop.models.UpdateUserAdminRequest;
 import com.example.riotshop.models.UserResponse;
 import com.example.riotshop.utils.SharedPrefManager;
 
-import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -78,37 +77,40 @@ public class AdminEditUserActivity extends AppCompatActivity {
         }
 
         ApiService apiService = RetrofitClient.getInstance().getApiService();
-        Call<ApiResponse<List<UserResponse>>> call = apiService.getAdminUsers("Bearer " + token, null, null);
+        Call<ApiResponse<UserResponse>> call = apiService.getUserById("Bearer " + token, userId);
 
-        call.enqueue(new Callback<ApiResponse<List<UserResponse>>>() {
+        call.enqueue(new Callback<ApiResponse<UserResponse>>() {
             @Override
-            public void onResponse(Call<ApiResponse<List<UserResponse>>> call, Response<ApiResponse<List<UserResponse>>> response) {
+            public void onResponse(Call<ApiResponse<UserResponse>> call, Response<ApiResponse<UserResponse>> response) {
                 if (response.isSuccessful() && response.body() != null && response.body().isSuccess()) {
-                    List<UserResponse> users = response.body().getData();
-                    for (UserResponse u : users) {
-                        if (u.getUserId() == userId) {
-                            user = u;
-                            break;
-                        }
-                    }
+                    user = response.body().getData();
                     if (user != null) {
                         if (getSupportActionBar() != null) {
                             getSupportActionBar().setTitle("Sửa người dùng: " + user.getUsername());
                         }
                         loadUserData();
                     } else {
-                        Toast.makeText(AdminEditUserActivity.this, "Không tìm thấy người dùng", Toast.LENGTH_SHORT).show();
+                        String errorMsg = response.body().getMessage() != null ? response.body().getMessage() : "Không tìm thấy người dùng";
+                        Toast.makeText(AdminEditUserActivity.this, errorMsg, Toast.LENGTH_SHORT).show();
                         finish();
                     }
                 } else {
-                    Toast.makeText(AdminEditUserActivity.this, "Lỗi tải thông tin người dùng", Toast.LENGTH_SHORT).show();
+                    String errorMsg = "Lỗi tải thông tin người dùng";
+                    if (response.body() != null && response.body().getMessage() != null) {
+                        errorMsg = response.body().getMessage();
+                    } else if (response.code() == 403) {
+                        errorMsg = "Bạn không có quyền xem người dùng này";
+                    } else if (response.code() == 404) {
+                        errorMsg = "Không tìm thấy người dùng";
+                    }
+                    Toast.makeText(AdminEditUserActivity.this, errorMsg, Toast.LENGTH_SHORT).show();
                     finish();
                 }
             }
 
             @Override
-            public void onFailure(Call<ApiResponse<List<UserResponse>>> call, Throwable t) {
-                Toast.makeText(AdminEditUserActivity.this, "Lỗi tải thông tin người dùng", Toast.LENGTH_SHORT).show();
+            public void onFailure(Call<ApiResponse<UserResponse>> call, Throwable t) {
+                Toast.makeText(AdminEditUserActivity.this, "Lỗi kết nối: " + t.getMessage(), Toast.LENGTH_SHORT).show();
                 finish();
             }
         });
@@ -197,8 +199,15 @@ public class AdminEditUserActivity extends AppCompatActivity {
                     Toast.makeText(AdminEditUserActivity.this, "Cập nhật thành công", Toast.LENGTH_SHORT).show();
                     finish();
                 } else {
-                    String error = response.body() != null ? response.body().getMessage() : response.message();
-                    Toast.makeText(AdminEditUserActivity.this, "Lỗi: " + error, Toast.LENGTH_SHORT).show();
+                    String errorMsg = "Lỗi cập nhật người dùng";
+                    if (response.body() != null && response.body().getMessage() != null) {
+                        errorMsg = response.body().getMessage();
+                    } else if (response.code() == 403) {
+                        errorMsg = "Bạn không có quyền chỉnh sửa người dùng này";
+                    } else if (response.code() == 400) {
+                        errorMsg = "Dữ liệu không hợp lệ";
+                    }
+                    Toast.makeText(AdminEditUserActivity.this, errorMsg, Toast.LENGTH_SHORT).show();
                 }
             }
 
@@ -231,8 +240,15 @@ public class AdminEditUserActivity extends AppCompatActivity {
                             Toast.makeText(AdminEditUserActivity.this, "Xóa thành công", Toast.LENGTH_SHORT).show();
                             finish();
                         } else {
-                            String error = response.body() != null ? response.body().getMessage() : response.message();
-                            Toast.makeText(AdminEditUserActivity.this, "Lỗi: " + error, Toast.LENGTH_SHORT).show();
+                            String errorMsg = "Lỗi xóa người dùng";
+                            if (response.body() != null && response.body().getMessage() != null) {
+                                errorMsg = response.body().getMessage();
+                            } else if (response.code() == 403) {
+                                errorMsg = "Bạn không có quyền xóa người dùng này";
+                            } else if (response.code() == 400) {
+                                errorMsg = "Không thể xóa người dùng có đơn hàng";
+                            }
+                            Toast.makeText(AdminEditUserActivity.this, errorMsg, Toast.LENGTH_SHORT).show();
                         }
                     }
 

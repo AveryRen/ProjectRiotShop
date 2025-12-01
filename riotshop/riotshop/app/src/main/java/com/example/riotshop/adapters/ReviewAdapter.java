@@ -4,6 +4,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
@@ -22,10 +23,22 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewView
 
     private Context context;
     private List<Review> reviewList;
+    private int currentUserId;
+    private OnReviewActionListener onReviewActionListener;
 
-    public ReviewAdapter(Context context, List<Review> reviewList) {
+    public interface OnReviewActionListener {
+        void onEditReview(Review review);
+        void onDeleteReview(Review review);
+    }
+
+    public ReviewAdapter(Context context, List<Review> reviewList, int currentUserId) {
         this.context = context;
         this.reviewList = reviewList;
+        this.currentUserId = currentUserId;
+    }
+
+    public void setOnReviewActionListener(OnReviewActionListener listener) {
+        this.onReviewActionListener = listener;
     }
 
     @NonNull
@@ -73,6 +86,28 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewView
         } else {
             holder.tvDate.setText("");
         }
+        
+        // Show edit/delete buttons only if this is current user's review
+        boolean isMyReview = (currentUserId > 0 && review.getUserId() == currentUserId);
+        if (isMyReview && onReviewActionListener != null) {
+            holder.btnEdit.setVisibility(View.VISIBLE);
+            holder.btnDelete.setVisibility(View.VISIBLE);
+            
+            holder.btnEdit.setOnClickListener(v -> {
+                if (onReviewActionListener != null) {
+                    onReviewActionListener.onEditReview(review);
+                }
+            });
+            
+            holder.btnDelete.setOnClickListener(v -> {
+                if (onReviewActionListener != null) {
+                    onReviewActionListener.onDeleteReview(review);
+                }
+            });
+        } else {
+            holder.btnEdit.setVisibility(View.GONE);
+            holder.btnDelete.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -83,6 +118,7 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewView
     public static class ReviewViewHolder extends RecyclerView.ViewHolder {
         TextView tvUsername, tvComment, tvDate;
         RatingBar ratingBar;
+        ImageButton btnEdit, btnDelete;
 
         public ReviewViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -90,6 +126,8 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewView
             tvComment = itemView.findViewById(R.id.tv_review_comment);
             tvDate = itemView.findViewById(R.id.tv_review_date);
             ratingBar = itemView.findViewById(R.id.rating_bar_review);
+            btnEdit = itemView.findViewById(R.id.btn_edit_review);
+            btnDelete = itemView.findViewById(R.id.btn_delete_review);
         }
     }
 }

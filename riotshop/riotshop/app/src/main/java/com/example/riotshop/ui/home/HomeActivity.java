@@ -19,6 +19,7 @@ import com.example.riotshop.R;
 import com.example.riotshop.ui.auth.LoginActivity;
 import com.example.riotshop.ui.cart.CartFragment;
 import com.example.riotshop.ui.favorite.FavoriteActivity;
+import com.example.riotshop.ui.other.DepositActivity;
 import com.example.riotshop.ui.other.OrderHistoryFragment;
 import com.example.riotshop.ui.other.PurchasedAccountsActivity;
 import com.example.riotshop.ui.profile.ProfileFragment;
@@ -89,7 +90,10 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         } else if (itemId == R.id.nav_profile) {
             selectedFragment = new ProfileFragment();
         } else if (itemId == R.id.nav_deposit) {
-            Toast.makeText(this, "Chức năng Nạp tiền đang được phát triển", Toast.LENGTH_SHORT).show();
+            Intent depositIntent = new Intent(this, DepositActivity.class);
+            startActivity(depositIntent);
+            drawer.closeDrawer(GravityCompat.START);
+            return true;
         } else if (itemId == R.id.nav_logout) {
             handleLogout();
             return true;

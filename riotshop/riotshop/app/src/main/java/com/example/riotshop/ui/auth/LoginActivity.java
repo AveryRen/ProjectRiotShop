@@ -100,6 +100,8 @@ public class LoginActivity extends AppCompatActivity {
                             );
                             // Save isAdmin status
                             SharedPrefManager.getInstance(LoginActivity.this).saveIsAdmin(user.isAdmin());
+                            // Save userId
+                            SharedPrefManager.getInstance(LoginActivity.this).saveUserId(user.getUserId());
                         }
                         
                         Toast.makeText(LoginActivity.this, "Đăng nhập thành công!", Toast.LENGTH_SHORT).show();
