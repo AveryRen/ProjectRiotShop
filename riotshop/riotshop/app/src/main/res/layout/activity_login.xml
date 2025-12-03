@@ -1,76 +1,74 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="@dimen/activity_horizontal_margin"
-    android:background="@color/riot_black_dark"
-    android:gravity="center_vertical"
+    android:background="@color/riot_background_dark"
+    android:gravity="center"
+    android:padding="24dp"
     tools:context=".ui.auth.LoginActivity">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/title_login"
-        android:textSize="32sp"
-        android:textStyle="bold"
-        android:textColor="@color/riot_gold_accent"
-        android:layout_marginBottom="40dp"/>
-
-    <EditText
-        android:id="@+id/et_email"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="@string/hint_email"
-        android:inputType="textEmailAddress"
-        android:textColor="@color/riot_text_light"
-        android:textColorHint="@color/riot_text_hint"
-        android:backgroundTint="@color/riot_gold_accent"
-        android:minHeight="48dp" />
+        android:gravity="center_horizontal"
+        android:orientation="vertical">
 
-    <EditText
-        android:id="@+id/et_password"
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="40dp"
+            android:text="RIOT SHOP"
+            android:textColor="@color/riot_gold"
+            android:textSize="48sp"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/et_username"
+            style="@style/RiotEditTextStyle"
+            android:hint="Tên đăng nhập hoặc Email"
+            android:inputType="text" />
+
+        <EditText
+            android:id="@+id/et_password"
+            style="@style/RiotEditTextStyle"
+            android:hint="Mật khẩu"
+            android:inputType="textPassword" />
+
+        <TextView
+            android:id="@+id/tv_forgot_password"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:layout_marginBottom="24dp"
+            android:text="Quên mật khẩu?"
+            android:textColor="@color/riot_text_hint" />
+
+        <Button
+            android:id="@+id/btn_login"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/button_riot"
+            android:paddingTop="12dp"
+            android:paddingBottom="12dp"
+            android:text="ĐĂNG NHẬP"
+            android:textColor="@color/riot_background_dark"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tv_signup"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:text="Chưa có tài khoản? Đăng ký ngay"
+            android:textColor="@color/riot_text_hint" />
+
+    </LinearLayout>
+
+    <!-- Snow Effect Overlay -->
+    <com.example.riotshop.ui.SnowView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="@string/hint_password"
-        android:inputType="textPassword"
-        android:textColor="@color/riot_text_light"
-        android:textColorHint="@color/riot_text_hint"
-        android:backgroundTint="@color/riot_gold_accent"
-        android:minHeight="48dp"
-        android:layout_marginTop="16dp" />
+        android:layout_height="match_parent" />
 
-    <Button
-        android:id="@+id/btn_login"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/button_login"
-        android:layout_marginTop="30dp"
-        android:backgroundTint="@color/riot_red_primary"
-        android:textColor="@color/riot_text_light"
-        android:paddingVertical="12dp"
-        android:textStyle="bold"/>
-
-    <TextView
-        android:id="@+id/tv_forgot_password"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/text_forgot_password"
-        android:padding="8dp"
-        android:layout_gravity="end"
-        android:textColor="@color/riot_gold_accent"
-        android:textStyle="italic" />
-
-    <TextView
-        android:id="@+id/tv_signup"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/text_no_account"
-        android:padding="8dp"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="50dp"
-        android:textColor="@color/riot_text_light" />
-
-</LinearLayout>
+</RelativeLayout>

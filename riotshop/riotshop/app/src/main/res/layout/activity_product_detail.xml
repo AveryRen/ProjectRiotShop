@@ -4,21 +4,44 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/riot_black_dark"
+    android:background="@color/riot_background_dark"
+    android:fitsSystemWindows="true"
     tools:context=".ui.product.ProductDetailActivity">
 
     <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/app_bar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="300dp"
+        android:fitsSystemWindows="true"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar_product_detail"
+        <com.google.android.material.appbar.CollapsingToolbarLayout
+            android:id="@+id/collapsing_toolbar"
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="@color/riot_black_light"
-            app:titleTextColor="@color/riot_gold_accent" />
+            android:layout_height="match_parent"
+            android:fitsSystemWindows="true"
+            app:contentScrim="@color/riot_background_light"
+            app:expandedTitleMarginEnd="64dp"
+            app:expandedTitleMarginStart="48dp"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
+            <ImageView
+                android:id="@+id/iv_product_detail_image"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:fitsSystemWindows="true"
+                android:scaleType="centerCrop"
+                android:src="@drawable/placeholder_account"
+                app:layout_collapseMode="parallax" />
+
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar_product_detail"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                app:layout_collapseMode="pin"
+                app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+
+        </com.google.android.material.appbar.CollapsingToolbarLayout>
     </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.core.widget.NestedScrollView
@@ -29,194 +52,88 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <ImageView
-                android:id="@+id/iv_product_image_detail"
-                android:layout_width="match_parent"
-                android:layout_height="250dp"
-                android:scaleType="centerCrop"
-                tools:src="@drawable/placeholder_account" />
+            android:orientation="vertical"
+            android:padding="24dp">
 
             <TextView
-                android:id="@+id/tv_product_name_detail"
-                android:layout_width="match_parent"
+                android:id="@+id/tv_product_detail_title"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:paddingHorizontal="16dp"
-                android:textColor="@color/riot_text_light"
+                android:text="Tên Sản Phẩm Rất Dài"
+                android:textColor="@color/riot_text_primary"
                 android:textSize="24sp"
-                android:textStyle="bold"
-                tools:text="Tên Sản Phẩm" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:paddingHorizontal="16dp"
-                android:orientation="horizontal"
-                android:gravity="center_vertical">
-
-                <TextView
-                    android:id="@+id/tv_product_price_detail"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:textColor="@color/riot_red_primary"
-                    android:textSize="22sp"
-                    android:textStyle="bold"
-                    tools:text="999.999 VNĐ" />
-
-                <ImageButton
-                    android:id="@+id/btn_favorite"
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
-                    android:src="@drawable/ic_favorite_border_gold"
-                    android:background="?attr/selectableItemBackgroundBorderless"
-                    android:contentDescription="Yêu thích"
-                    android:padding="8dp" />
-
-            </LinearLayout>
+                android:textStyle="bold" />
 
             <TextView
-                android:id="@+id/tv_product_quantity"
-                android:layout_width="match_parent"
+                android:id="@+id/tv_product_detail_price"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:paddingHorizontal="16dp"
-                android:textColor="@color/riot_text_secondary"
-                android:textSize="14sp"
-                tools:text="Còn lại: 5 tài khoản" />
+                android:text="1.500.000 VNĐ"
+                android:textColor="@color/riot_gold"
+                android:textSize="28sp"
+                android:textStyle="bold" />
 
             <TextView
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
-                android:paddingHorizontal="16dp"
                 android:text="Mô tả chi tiết"
-                android:textColor="@color/riot_gold_accent"
+                android:textColor="@color/riot_gold"
                 android:textSize="18sp"
                 android:textStyle="bold" />
 
             <TextView
-                android:id="@+id/tv_product_description_detail"
+                android:id="@+id/tv_product_detail_description"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:paddingHorizontal="16dp"
                 android:lineSpacingExtra="4dp"
-                android:textColor="@color/riot_text_light"
-                android:textSize="16sp"
-                tools:text="- Dòng mô tả 1.\n- Dòng mô tả 2.\n- Dòng mô tả 3." />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
-                android:paddingHorizontal="16dp"
-                android:text="Sản phẩm liên quan"
-                android:textColor="@color/riot_gold_accent"
-                android:textSize="18sp"
-                android:textStyle="bold" />
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rv_related_products"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:paddingHorizontal="8dp"
-                android:orientation="horizontal"
-                tools:listitem="@layout/item_product" />
-
-            <!-- Reviews Section -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
-                android:paddingHorizontal="16dp"
-                android:orientation="vertical">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical">
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="Đánh giá &amp; Nhận xét"
-                        android:textColor="@color/riot_gold_accent"
-                        android:textSize="18sp"
-                        android:textStyle="bold" />
-
-                    <Button
-                        android:id="@+id/btn_add_review"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Viết đánh giá"
-                        android:textSize="12sp"
-                        android:paddingHorizontal="12dp"
-                        android:paddingVertical="4dp"
-                        android:backgroundTint="@color/riot_gold_accent"
-                        android:textColor="@color/riot_black_dark" />
-
-                </LinearLayout>
-
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/rv_reviews"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="12dp"
-                    android:nestedScrollingEnabled="false"
-                    tools:listitem="@layout/item_review" />
-
-                <TextView
-                    android:id="@+id/tv_no_reviews"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:text="Chưa có đánh giá nào"
-                    android:textColor="@color/riot_text_hint"
-                    android:textSize="14sp"
-                    android:gravity="center"
-                    android:visibility="gone" />
-
-            </LinearLayout>
+                android:text="Mô tả chi tiết sản phẩm sẽ được hiển thị ở đây. Bao gồm các thông tin về skin, rank, và các vật phẩm khác."
+                android:textColor="@color/riot_text_hint"
+                android:textSize="16sp" />
 
         </LinearLayout>
-
     </androidx.core.widget.NestedScrollView>
 
+    <!-- Bottom Action Buttons -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
-        android:background="@color/riot_black_light"
-        android:elevation="4dp"
+        android:background="@color/riot_background_light"
         android:orientation="horizontal"
-        android:padding="8dp">
-
-        <Button
-            android:id="@+id/btn_add_to_cart"
-            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
-            android:layout_weight="1"
-            android:text="Thêm vào giỏ hàng"
-            android:textColor="@color/riot_gold_accent"
-            app:strokeColor="@color/riot_gold_accent" />
+        android:padding="16dp">
 
         <Button
             android:id="@+id/btn_buy_now"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
             android:layout_weight="1"
-            android:backgroundTint="@color/riot_gold_accent"
-            android:text="Mua ngay"
-            android:textColor="@color/riot_black_dark" />
+            android:background="@drawable/button_riot"
+            android:paddingTop="12dp"
+            android:paddingBottom="12dp"
+            android:text="MUA NGAY"
+            android:textColor="@color/riot_background_dark"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <ImageButton
+            android:id="@+id/btn_detail_add_to_cart"
+            android:layout_width="56dp"
+            android:layout_height="match_parent"
+            android:background="@drawable/edittext_background_selector"
+            android:src="@drawable/ic_add_shopping_cart"
+            app:tint="@color/riot_gold" />
+
     </LinearLayout>
+
+    <!-- Snow Effect Overlay -->
+    <com.example.riotshop.ui.SnowView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_anchor="@id/app_bar"
+        app:layout_anchorGravity="center" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

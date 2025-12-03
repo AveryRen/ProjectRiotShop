@@ -36,13 +36,13 @@ import retrofit2.Response;
 
 public class FavoriteActivity extends AppCompatActivity implements ProductAdapter.OnItemClickListener, ProductAdapter.OnFavoriteClickListener {
 
-    private RecyclerView rvWishlist;
+    private RecyclerView rvFavoriteProducts;
     private ProductAdapter productAdapter;
     private List<Product> wishlistProducts;
-    private TextView tvEmptyWishlist;
+    private TextView tvEmptyWishlist; // You might want to add this view to your layout
     private Toolbar toolbar;
-    private java.util.Map<Integer, Integer> wishlistIdMap; // Map templateId to wishlistId
-    private java.util.Set<Integer> favoriteTemplateIds;
+    private Map<Integer, Integer> wishlistIdMap;
+    private Set<Integer> favoriteTemplateIds;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,12 +52,11 @@ public class FavoriteActivity extends AppCompatActivity implements ProductAdapte
         SharedPrefManager.getInstance(this);
 
         toolbar = findViewById(R.id.toolbar_favorite);
-        rvWishlist = findViewById(R.id.rv_wishlist);
-        tvEmptyWishlist = findViewById(R.id.tv_empty_wishlist);
+        rvFavoriteProducts = findViewById(R.id.rv_favorite_products); // Corrected ID
+        // tvEmptyWishlist = findViewById(R.id.tv_empty_wishlist); // Add this if you have it
 
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle("Yêu thích");
 
         wishlistProducts = new ArrayList<>();
         wishlistIdMap = new HashMap<>();
@@ -70,14 +69,14 @@ public class FavoriteActivity extends AppCompatActivity implements ProductAdapte
         productAdapter = new ProductAdapter(this, wishlistProducts);
         productAdapter.setOnItemClickListener(this);
         productAdapter.setOnFavoriteClickListener(this);
-        rvWishlist.setLayoutManager(new GridLayoutManager(this, 2));
-        rvWishlist.setAdapter(productAdapter);
+        rvFavoriteProducts.setLayoutManager(new GridLayoutManager(this, 2));
+        rvFavoriteProducts.setAdapter(productAdapter);
     }
 
     private void loadWishlist() {
         String token = SharedPrefManager.getInstance(this).getToken();
         if (token == null) {
-            showEmptyWishlist();
+            showEmptyWishlist(true);
             Toast.makeText(this, "Vui lòng đăng nhập", Toast.LENGTH_SHORT).show();
             return;
         }
@@ -88,20 +87,21 @@ public class FavoriteActivity extends AppCompatActivity implements ProductAdapte
         call.enqueue(new Callback<ApiResponse<List<Wishlist>>>() {
             @Override
             public void onResponse(Call<ApiResponse<List<Wishlist>>> call, Response<ApiResponse<List<Wishlist>>> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    ApiResponse<List<Wishlist>> apiResponse = response.body();
-                    if (apiResponse.isSuccess() && apiResponse.getData() != null && !apiResponse.getData().isEmpty()) {
-                        wishlistProducts.clear();
-                        wishlistIdMap.clear();
-                        favoriteTemplateIds.clear();
-                        for (Wishlist wishlist : apiResponse.getData()) {
+                if (response.isSuccessful() && response.body() != null && response.body().isSuccess()) {
+                    List<Wishlist> loadedItems = response.body().getData();
+                    wishlistProducts.clear();
+                    wishlistIdMap.clear();
+                    favoriteTemplateIds.clear();
+
+                    if (loadedItems != null && !loadedItems.isEmpty()) {
+                        for (Wishlist wishlist : loadedItems) {
                             if (wishlist.getProductTemplate() != null) {
                                 ProductTemplate template = wishlist.getProductTemplate();
                                 Product product = new Product(
                                         template.getTemplateId(),
                                         template.getTitle(),
                                         FormatUtils.formatPrice(template.getBasePrice()),
-                                        R.drawable.placeholder_account,
+                                        R.drawable.placeholder_account, // Placeholder, can be replaced with real image URL
                                         template.getDescription() != null ? template.getDescription() : ""
                                 );
                                 wishlistProducts.add(product);
@@ -109,33 +109,31 @@ public class FavoriteActivity extends AppCompatActivity implements ProductAdapte
                                 favoriteTemplateIds.add(template.getTemplateId());
                             }
                         }
-                        productAdapter.setFavoriteTemplateIds(favoriteTemplateIds);
-                        productAdapter.notifyDataSetChanged();
-                        showWishlist();
-                    } else {
-                        showEmptyWishlist();
                     }
+                    productAdapter.setFavoriteTemplateIds(favoriteTemplateIds);
+                    productAdapter.notifyDataSetChanged();
+                    showEmptyWishlist(wishlistProducts.isEmpty());
                 } else {
-                    showEmptyWishlist();
+                    showEmptyWishlist(true);
                 }
             }
 
             @Override
             public void onFailure(Call<ApiResponse<List<Wishlist>>> call, Throwable t) {
                 Toast.makeText(FavoriteActivity.this, "Lỗi khi tải danh sách yêu thích: " + t.getMessage(), Toast.LENGTH_SHORT).show();
-                showEmptyWishlist();
+                showEmptyWishlist(true);
             }
         });
     }
 
-    private void showEmptyWishlist() {
-        tvEmptyWishlist.setVisibility(View.VISIBLE);
-        rvWishlist.setVisibility(View.GONE);
-    }
-
-    private void showWishlist() {
-        tvEmptyWishlist.setVisibility(View.GONE);
-        rvWishlist.setVisibility(View.VISIBLE);
+    private void showEmptyWishlist(boolean isEmpty) {
+        if (isEmpty) {
+            rvFavoriteProducts.setVisibility(View.GONE);
+            // if (tvEmptyWishlist != null) tvEmptyWishlist.setVisibility(View.VISIBLE);
+        } else {
+            rvFavoriteProducts.setVisibility(View.VISIBLE);
+            // if (tvEmptyWishlist != null) tvEmptyWishlist.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -144,7 +142,7 @@ public class FavoriteActivity extends AppCompatActivity implements ProductAdapte
         intent.putExtra("templateId", product.getTemplateId());
         startActivity(intent);
     }
-    
+
     @Override
     public void onFavoriteClick(Product product, boolean isFavorite) {
         String token = SharedPrefManager.getInstance(this).getToken();
@@ -152,29 +150,31 @@ public class FavoriteActivity extends AppCompatActivity implements ProductAdapte
             Toast.makeText(this, "Vui lòng đăng nhập", Toast.LENGTH_SHORT).show();
             return;
         }
-        
-        ApiService apiService = RetrofitClient.getInstance().getApiService();
-        
+
         if (isFavorite) {
-            // Remove from wishlist (unlike)
             Integer wishlistId = wishlistIdMap.get(product.getTemplateId());
             if (wishlistId != null) {
+                ApiService apiService = RetrofitClient.getInstance().getApiService();
                 Call<ApiResponse<Object>> call = apiService.removeFromWishlist("Bearer " + token, wishlistId);
                 call.enqueue(new Callback<ApiResponse<Object>>() {
                     @Override
                     public void onResponse(Call<ApiResponse<Object>> call, Response<ApiResponse<Object>> response) {
                         if (response.isSuccessful() && response.body() != null && response.body().isSuccess()) {
-                            // Remove from list immediately
-                            wishlistProducts.remove(product);
+                            int position = -1;
+                            for (int i = 0; i < wishlistProducts.size(); i++) {
+                                if (wishlistProducts.get(i).getTemplateId() == product.getTemplateId()) {
+                                    position = i;
+                                    break;
+                                }
+                            }
+                            if (position != -1) {
+                                wishlistProducts.remove(position);
+                                productAdapter.notifyItemRemoved(position);
+                            }
                             wishlistIdMap.remove(product.getTemplateId());
                             favoriteTemplateIds.remove(product.getTemplateId());
-                            productAdapter.setFavoriteTemplateIds(favoriteTemplateIds);
-                            productAdapter.notifyDataSetChanged();
-                            
-                            if (wishlistProducts.isEmpty()) {
-                                showEmptyWishlist();
-                            }
-                            
+                            productAdapter.setFavoriteTemplateIds(favoriteTemplateIds); // Update the set in adapter
+                            showEmptyWishlist(wishlistProducts.isEmpty());
                             Toast.makeText(FavoriteActivity.this, "Đã xóa khỏi danh sách yêu thích", Toast.LENGTH_SHORT).show();
                         } else {
                             Toast.makeText(FavoriteActivity.this, "Lỗi khi xóa khỏi danh sách yêu thích", Toast.LENGTH_SHORT).show();
@@ -187,27 +187,6 @@ public class FavoriteActivity extends AppCompatActivity implements ProductAdapte
                     }
                 });
             }
-        } else {
-            // Add to wishlist (like) - should not happen in favorite page, but handle it anyway
-            com.example.riotshop.models.AddWishlistRequest request = new com.example.riotshop.models.AddWishlistRequest(product.getTemplateId());
-            Call<ApiResponse<Wishlist>> call = apiService.addToWishlist("Bearer " + token, request);
-            call.enqueue(new Callback<ApiResponse<Wishlist>>() {
-                @Override
-                public void onResponse(Call<ApiResponse<Wishlist>> call, Response<ApiResponse<Wishlist>> response) {
-                    if (response.isSuccessful() && response.body() != null && response.body().isSuccess()) {
-                        Wishlist wishlist = response.body().getData();
-                        wishlistIdMap.put(product.getTemplateId(), wishlist.getWishlistId());
-                        favoriteTemplateIds.add(product.getTemplateId());
-                        productAdapter.setFavoriteTemplateIds(favoriteTemplateIds);
-                        Toast.makeText(FavoriteActivity.this, "Đã thêm vào danh sách yêu thích", Toast.LENGTH_SHORT).show();
-                    }
-                }
-
-                @Override
-                public void onFailure(Call<ApiResponse<Wishlist>> call, Throwable t) {
-                    Toast.makeText(FavoriteActivity.this, "Lỗi kết nối: " + t.getMessage(), Toast.LENGTH_SHORT).show();
-                }
-            });
         }
     }
 
@@ -216,11 +195,10 @@ public class FavoriteActivity extends AppCompatActivity implements ProductAdapte
         onBackPressed();
         return true;
     }
-    
+
     @Override
     protected void onResume() {
         super.onResume();
-        // Reload wishlist when activity resumes to sync with other pages
         loadWishlist();
     }
 }

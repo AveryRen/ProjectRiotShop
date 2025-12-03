@@ -1,130 +1,117 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/riot_black_dark">
+    android:background="@color/riot_background_dark"
+    tools:context=".ui.profile.ProfileFragment">
 
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="16dp">
+        android:layout_height="match_parent">
 
-        <TextView
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Thông tin cá nhân"
-            android:textColor="@color/riot_gold_accent"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            android:layout_marginBottom="24dp" />
+            android:orientation="vertical"
+            android:padding="24dp">
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Tên đăng nhập:"
-            android:textColor="@color/riot_text_hint"
-            android:textSize="14sp"
-            android:layout_marginBottom="4dp" />
+            <!-- User Info Section -->
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/iv_profile_avatar"
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                android:layout_gravity="center_horizontal"
+                android:src="@drawable/ic_profile_default"
+                app:civ_border_color="@color/riot_gold"
+                app:civ_border_width="2dp" />
 
-        <TextView
-            android:id="@+id/tv_username"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textColor="@color/riot_text_light"
-            android:textSize="16sp"
-            android:layout_marginBottom="16dp"
-            tools:text="username" />
+            <TextView
+                android:id="@+id/tv_profile_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="16dp"
+                android:text="Tên Người Dùng"
+                android:textColor="@color/riot_text_primary"
+                android:textSize="24sp"
+                android:textStyle="bold" />
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Email:"
-            android:textColor="@color/riot_text_hint"
-            android:textSize="14sp"
-            android:layout_marginBottom="4dp" />
+            <TextView
+                android:id="@+id/tv_profile_email"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="4dp"
+                android:text="email@example.com"
+                android:textColor="@color/riot_text_hint"
+                android:textSize="16sp" />
 
-        <TextView
-            android:id="@+id/tv_email"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textColor="@color/riot_text_light"
-            android:textSize="16sp"
-            android:layout_marginBottom="16dp"
-            tools:text="email@example.com" />
+            <!-- Balance Section -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:background="@drawable/profile_item_background"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:padding="16dp">
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Họ và tên:"
-            android:textColor="@color/riot_text_hint"
-            android:textSize="14sp"
-            android:layout_marginBottom="4dp" />
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Số dư tài khoản"
+                    android:textColor="@color/riot_text_hint"
+                    android:textSize="16sp" />
 
-        <TextView
-            android:id="@+id/tv_full_name"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textColor="@color/riot_text_light"
-            android:textSize="16sp"
-            android:layout_marginBottom="16dp"
-            tools:text="Nguyễn Văn A" />
+                <TextView
+                    android:id="@+id/tv_balance"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="200.000 VNĐ"
+                    android:textColor="@color/riot_gold"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Số điện thoại:"
-            android:textColor="@color/riot_text_hint"
-            android:textSize="14sp"
-            android:layout_marginBottom="4dp" />
+            <!-- Menu Section -->
+            <TextView
+                style="@style/RiotMenuItem"
+                android:id="@+id/btn_edit_profile"
+                android:text="Chỉnh sửa thông tin" />
 
-        <TextView
-            android:id="@+id/tv_phone"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textColor="@color/riot_text_light"
-            android:textSize="16sp"
-            android:layout_marginBottom="16dp"
-            tools:text="0901234567" />
+            <TextView
+                style="@style/RiotMenuItem"
+                android:id="@+id/btn_order_history"
+                android:text="Lịch sử đơn hàng" />
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Số dư:"
-            android:textColor="@color/riot_text_hint"
-            android:textSize="14sp"
-            android:layout_marginBottom="4dp" />
+            <TextView
+                style="@style/RiotMenuItem"
+                android:id="@+id/btn_purchased_accounts"
+                android:text="Tài khoản đã mua" />
 
-        <TextView
-            android:id="@+id/tv_balance"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textColor="@color/riot_gold_accent"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            android:layout_marginBottom="24dp"
-            tools:text="1.000.000 VNĐ" />
+            <Button
+                android:id="@+id/btn_logout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:background="@drawable/button_riot"
+                android:paddingTop="12dp"
+                android:paddingBottom="12dp"
+                android:text="Đăng Xuất"
+                android:textColor="@color/riot_background_dark"
+                android:textSize="16sp"
+                android:textStyle="bold" />
 
-        <Button
-            android:id="@+id/btn_edit_profile"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Chỉnh sửa thông tin"
-            android:backgroundTint="@color/riot_gold_accent"
-            android:textColor="@color/riot_black_dark"
-            android:textStyle="bold"
-            android:layout_marginBottom="12dp" />
+        </LinearLayout>
 
-        <Button
-            android:id="@+id/btn_purchased_accounts"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Tài khoản đã mua"
-            android:backgroundTint="@color/riot_black_light"
-            android:textColor="@color/riot_gold_accent"
-            android:textStyle="bold" />
+    </ScrollView>
 
-    </LinearLayout>
+    <!-- Snow Effect Overlay -->
+    <com.example.riotshop.ui.SnowView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
-</androidx.core.widget.NestedScrollView>
+</RelativeLayout>

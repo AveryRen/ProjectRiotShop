@@ -1,32 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="@color/riot_black_dark">
+    android:background="@color/riot_background_dark"
+    tools:context=".ui.favorite.FavoriteActivity">
 
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbar_favorite"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="@color/riot_black_light"
-        app:titleTextColor="@color/riot_gold_accent" />
-
-    <TextView
-        android:id="@+id/tv_empty_wishlist"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="Chưa có sản phẩm yêu thích"
-        android:textColor="@color/riot_text_light"
-        android:textSize="18sp"
-        android:gravity="center"
-        android:visibility="gone" />
+        android:orientation="vertical">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_wishlist"
+        <com.google.android.material.appbar.AppBarLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar_favorite"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="@color/riot_background_light"
+                app:title="Sản phẩm Yêu thích"
+                app:titleTextColor="@color/riot_gold" />
+
+        </com.google.android.material.appbar.AppBarLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_favorite_products"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clipToPadding="false"
+            android:padding="8dp" />
+
+    </LinearLayout>
+
+    <!-- Snow Effect Overlay -->
+    <com.example.riotshop.ui.SnowView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:padding="4dp" />
+        android:layout_height="match_parent" />
 
-</LinearLayout>
+</RelativeLayout>

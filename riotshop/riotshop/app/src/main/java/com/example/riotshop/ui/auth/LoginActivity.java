@@ -26,7 +26,7 @@ import retrofit2.Response;
 public class LoginActivity extends AppCompatActivity {
 
     private Button btnLogin;
-    private EditText etEmail, etPassword;
+    private EditText etUsername, etPassword;
     private TextView tvSignUp, tvForgotPassword;
 
     @Override
@@ -37,9 +37,9 @@ public class LoginActivity extends AppCompatActivity {
         // Initialize SharedPrefManager
         SharedPrefManager.getInstance(this);
 
-        // Ánh xạ View
+        // Ánh xạ View with corrected IDs
         btnLogin = findViewById(R.id.btn_login);
-        etEmail = findViewById(R.id.et_email);
+        etUsername = findViewById(R.id.et_username); // Corrected ID
         etPassword = findViewById(R.id.et_password);
         tvSignUp = findViewById(R.id.tv_signup);
         tvForgotPassword = findViewById(R.id.tv_forgot_password);
@@ -56,7 +56,7 @@ public class LoginActivity extends AppCompatActivity {
 
         // Xử lý Login với API thực
         btnLogin.setOnClickListener(v -> {
-            String username = etEmail.getText().toString().trim();
+            String username = etUsername.getText().toString().trim();
             String password = etPassword.getText().toString().trim();
 
             if (username.isEmpty() || password.isEmpty()) {

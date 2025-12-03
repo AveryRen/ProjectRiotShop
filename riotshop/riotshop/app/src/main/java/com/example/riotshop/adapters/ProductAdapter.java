@@ -4,6 +4,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -14,6 +15,7 @@ import com.example.riotshop.R;
 import com.example.riotshop.models.Product;
 
 import java.util.List;
+import java.util.Set;
 
 public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductViewHolder> {
 
@@ -21,13 +23,13 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
     private List<Product> productList;
     private OnItemClickListener listener;
     private OnFavoriteClickListener favoriteListener;
-    private java.util.Set<Integer> favoriteTemplateIds; // Track which products are favorited
+    private Set<Integer> favoriteTemplateIds; // Track which products are favorited
 
     // Interface for click events
     public interface OnItemClickListener {
         void onItemClick(Product product);
     }
-    
+
     public interface OnFavoriteClickListener {
         void onFavoriteClick(Product product, boolean isFavorite);
     }
@@ -35,12 +37,12 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
     public void setOnItemClickListener(OnItemClickListener listener) {
         this.listener = listener;
     }
-    
+
     public void setOnFavoriteClickListener(OnFavoriteClickListener listener) {
         this.favoriteListener = listener;
     }
-    
-    public void setFavoriteTemplateIds(java.util.Set<Integer> favoriteIds) {
+
+    public void setFavoriteTemplateIds(Set<Integer> favoriteIds) {
         this.favoriteTemplateIds = favoriteIds;
         notifyDataSetChanged();
     }
@@ -64,13 +66,15 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
 
         holder.tvProductName.setText(product.getName());
         holder.tvProductPrice.setText(product.getPrice());
-        holder.ivProductImage.setImageResource(product.getImage());
         
+        // CORRECTED: Use the int resource from product.getImage()
+        holder.ivProductImage.setImageResource(product.getImage());
+
         // Update favorite icon state
         boolean isFavorite = favoriteTemplateIds != null && favoriteTemplateIds.contains(product.getTemplateId());
-        holder.ivFavoriteIcon.setImageResource(isFavorite ? R.drawable.ic_favorite_gold : R.drawable.ic_favorite_border_gold);
-        
-        holder.ivFavoriteIcon.setOnClickListener(v -> {
+        holder.btnFavorite.setImageResource(isFavorite ? R.drawable.ic_favorite_gold : R.drawable.ic_favorite_border_gold);
+
+        holder.btnFavorite.setOnClickListener(v -> {
             if (favoriteListener != null) {
                 favoriteListener.onFavoriteClick(product, isFavorite);
             }
@@ -86,14 +90,14 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
         ImageView ivProductImage;
         TextView tvProductName;
         TextView tvProductPrice;
-        ImageView ivFavoriteIcon;
+        ImageButton btnFavorite;
 
         public ProductViewHolder(@NonNull View itemView) {
             super(itemView);
             ivProductImage = itemView.findViewById(R.id.iv_product_image);
-            tvProductName = itemView.findViewById(R.id.tv_product_name);
+            tvProductName = itemView.findViewById(R.id.tv_product_title);
             tvProductPrice = itemView.findViewById(R.id.tv_product_price);
-            ivFavoriteIcon = itemView.findViewById(R.id.iv_favorite_icon);
+            btnFavorite = itemView.findViewById(R.id.btn_favorite);
 
             itemView.setOnClickListener(v -> {
                 int position = getAdapterPosition();

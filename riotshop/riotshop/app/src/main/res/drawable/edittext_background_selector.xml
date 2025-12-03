@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- State when the EditText is focused -->
+    <item android:state_focused="true">
+        <shape android:shape="rectangle">
+            <solid android:color="@color/riot_background_light"/>
+            <stroke android:width="2dp" android:color="@color/riot_gold"/>
+            <corners android:radius="8dp"/>
+        </shape>
+    </item>
+
+    <!-- Default state -->
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="@color/riot_background_light"/>
+            <stroke android:width="1dp" android:color="@color/riot_text_hint"/>
+            <corners android:radius="8dp"/>
+        </shape>
+    </item>
+</selector>

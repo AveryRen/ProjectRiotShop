@@ -1,60 +1,68 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="@color/riot_black_dark"
+    android:background="@color/riot_background_dark"
     tools:context=".ui.home.HomeFragment">
 
-    <!-- Search Bar -->
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:padding="12dp"
-        android:gravity="center_vertical">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-        <EditText
-            android:id="@+id/et_search"
-            android:layout_width="0dp"
+        <!-- Search and Filter Bar -->
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:hint="Tìm kiếm sản phẩm..."
-            android:background="@drawable/bg_rounded_search"
-            android:padding="12dp"
-            android:textColor="@color/riot_text_light"
-            android:textColorHint="@color/riot_text_hint"
-            android:drawableStart="@drawable/ic_search"
-            android:drawablePadding="8dp" />
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:padding="16dp">
 
-        <ImageButton
-            android:id="@+id/btn_filter"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:layout_marginStart="8dp"
-            android:src="@drawable/ic_menu_gold"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:contentDescription="Filter" />
+            <EditText
+                android:id="@+id/et_search"
+                style="@style/RiotEditTextStyle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="16dp"
+                android:layout_weight="1"
+                android:hint="Tìm kiếm sản phẩm..."
+                android:inputType="text"
+                android:maxLines="1" />
+
+            <ImageButton
+                android:id="@+id/btn_filter"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:src="@drawable/ic_filter_list"
+                android:tint="@color/riot_gold" />
+        </LinearLayout>
+
+        <!-- Categories -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_categories"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clipToPadding="false"
+            android:orientation="horizontal"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp" />
+
+        <!-- Products -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_products_fragment"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:clipToPadding="false"
+            android:padding="8dp" />
+
     </LinearLayout>
 
-    <!-- Categories Horizontal RecyclerView -->
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_categories"
+    <!-- Snow Effect Overlay -->
+    <com.example.riotshop.ui.SnowView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:paddingVertical="8dp"
-        tools:listitem="@layout/item_category" />
+        android:layout_height="match_parent" />
 
-    <!-- Products Grid RecyclerView -->
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_products_fragment"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:padding="4dp"
-        tools:listitem="@layout/item_product" />
-
-</LinearLayout>
+</RelativeLayout>

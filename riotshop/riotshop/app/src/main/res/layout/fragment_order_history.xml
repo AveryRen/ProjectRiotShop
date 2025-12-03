@@ -1,25 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/riot_black_dark">
+    android:background="@color/riot_background_dark"
+    tools:context=".ui.other.OrderHistoryFragment">
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_order_history"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clipToPadding="false"
+        android:padding="8dp" />
 
     <TextView
-        android:id="@+id/tv_empty_orders"
+        android:id="@+id/tv_empty_order_history"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:text="Chưa có đơn hàng nào"
-        android:textColor="@color/riot_text_light"
+        android:layout_centerInParent="true"
+        android:text="Lịch sử đơn hàng trống."
+        android:textColor="@color/riot_text_hint"
         android:textSize="18sp"
         android:visibility="gone" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_orders"
+    <!-- Snow Effect Overlay -->
+    <com.example.riotshop.ui.SnowView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:padding="8dp"
-        tools:listitem="@layout/item_order" />
+        android:layout_height="match_parent" />
 
-</FrameLayout>
+</RelativeLayout>

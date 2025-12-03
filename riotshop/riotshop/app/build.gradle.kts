@@ -4,14 +4,12 @@ plugins {
 
 android {
     namespace = "com.example.riotshop"
-    compileSdk {
-        version = release(36)
-    }
+    compileSdk = 34
 
     defaultConfig {
         applicationId = "com.example.riotshop"
         minSdk = 24
-        targetSdk = 36
+        targetSdk = 34
         versionCode = 1
         versionName = "1.0"
 
@@ -40,6 +38,9 @@ dependencies {
     implementation(libs.constraintlayout)
     implementation(libs.cardview)
     
+    // Circle ImageView
+    implementation("de.hdodenhof:circleimageview:3.1.0")
+
     // Retrofit for API calls
     implementation(libs.retrofit)
     implementation(libs.retrofit.gson)

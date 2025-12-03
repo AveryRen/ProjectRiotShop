@@ -1,21 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="riot_black_dark">#121212</color>
+    <!-- 
+    DEFINITIVE & COMPATIBLE PALETTE V3
+    This file contains ALL color names to ensure full project compatibility.
+    -->
+
+    <!-- New Hex Values from Video -->
+    <color name="riot_background_dark">#0C0F14</color>
+    <color name="riot_background_light">#13161C</color>
+    <color name="riot_gold">#C8A858</color>
+    <color name="riot_text_primary">#E5E5E5</color>
+    <color name="riot_text_hint">#7F7F7F</color>
+    <color name="riot_card_bg">#1B1F27</color>
+    <color name="riot_snow">#DDE3EA</color>
+
+    <!-- OLD Names (ALIASES) for compatibility with existing project files -->
+    <color name="riot_black_dark">#0C0F14</color>
+    <color name="riot_black_light">#13161C</color>
+    <color name="riot_gold_accent">#C8A858</color>
+    <color name="riot_text_light">#E5E5E5</color>
+    <color name="riot_text_secondary">#7F7F7F</color> <!-- RESTORED for compatibility -->
+
+    <!-- Input/Admin colors -->
+    <color name="input_background">#13161C</color>
+    <color name="input_text">#E5E5E5</color>
+    <color name="input_text_hint">#7F7F7F</color>
+
+    <!-- Original Unused Colors (for reference) -->
     <color name="riot_red_primary">#E3003B</color>
-    <color name="riot_gold_accent">#FFC72C</color>
-    <color name="riot_text_light">#FFFFFF</color>
-    <color name="riot_text_secondary">#AAAAAA</color>
-    <color name="riot_text_hint">#AAAAAA</color>
-    <color name="riot_black_light">#222222</color>
     <color name="error">#F44336</color>
     <color name="success">#4CAF50</color>
     <color name="warning">#FF9800</color>
-    
-    <!-- Input colors -->
-    <color name="input_background">#FFFFFF</color>
-    <color name="input_text">#000000</color>
-    <color name="input_text_hint">#757575</color>
-
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
 </resources>
