@@ -28,7 +28,6 @@ import com.example.riotshop.models.ProductTemplate;
 import com.example.riotshop.models.Review;
 import com.example.riotshop.models.Wishlist;
 import com.example.riotshop.ui.comment.AddCommentActivity;
-import com.example.riotshop.ui.other.CheckoutActivity;
 import com.example.riotshop.utils.FormatUtils;
 import com.example.riotshop.utils.SharedPrefManager;
 
@@ -104,11 +103,11 @@ public class ProductDetailActivity extends AppCompatActivity implements ProductA
 
         // Xử lý sự kiện click
         btnBuyNow.setOnClickListener(v -> {
-            if (currentProduct != null) {
-                Intent intent = new Intent(ProductDetailActivity.this, CheckoutActivity.class);
-                intent.putExtra("templateId", currentProduct.getTemplateId());
-                intent.putExtra("quantity", 1);
-                startActivity(intent);
+            // Sử dụng templateId từ intent thay vì currentProduct để tránh bug
+            if (templateId > 0) {
+                buyNow(templateId);
+            } else {
+                Toast.makeText(this, "Đang tải thông tin sản phẩm...", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -153,7 +152,17 @@ public class ProductDetailActivity extends AppCompatActivity implements ProductA
         tvProductName.setText(product.getTitle());
         tvProductPrice.setText(FormatUtils.formatPrice(product.getBasePrice()));
         tvProductDescription.setText(product.getDescription() != null ? product.getDescription() : "");
-        ivProductImage.setImageResource(R.drawable.placeholder_account);
+        
+        // Load image from URL if available, otherwise use placeholder
+        String imageUrl = product.getImageUrl();
+        android.util.Log.d("ProductDetail", "Product imageUrl: " + imageUrl);
+        if (imageUrl != null && !imageUrl.isEmpty()) {
+            android.util.Log.d("ProductDetail", "Loading image from URL: " + imageUrl);
+            com.example.riotshop.utils.ImageLoader.loadImage(ivProductImage, imageUrl);
+        } else {
+            android.util.Log.w("ProductDetail", "Image URL is null or empty, using placeholder");
+            ivProductImage.setImageResource(R.drawable.placeholder_account);
+        }
         
         // Display inventory quantity
         if (product.getInventory() != null) {
@@ -188,6 +197,7 @@ public class ProductDetailActivity extends AppCompatActivity implements ProductA
                                     template.getTitle(),
                                     FormatUtils.formatPrice(template.getBasePrice()),
                                     R.drawable.placeholder_account,
+                                    template.getImageUrl(),
                                     template.getDescription() != null ? template.getDescription() : ""
                             );
                             relatedProducts.add(product);
@@ -428,14 +438,15 @@ public class ProductDetailActivity extends AppCompatActivity implements ProductA
             return;
         }
         
-        if (currentProduct == null) {
+        // Sử dụng templateId từ intent thay vì currentProduct để tránh bug
+        if (templateId <= 0) {
             Toast.makeText(this, "Đang tải thông tin sản phẩm...", Toast.LENGTH_SHORT).show();
             return;
         }
         
         btnAddToCart.setEnabled(false);
         ApiService apiService = RetrofitClient.getInstance().getApiService();
-        AddToCartRequest request = new AddToCartRequest(currentProduct.getTemplateId(), 1);
+        AddToCartRequest request = new AddToCartRequest(templateId, 1);
         Call<ApiResponse<com.example.riotshop.models.CartItem>> call = apiService.addToCart("Bearer " + token, request);
         
         call.enqueue(new Callback<ApiResponse<com.example.riotshop.models.CartItem>>() {
@@ -452,6 +463,39 @@ public class ProductDetailActivity extends AppCompatActivity implements ProductA
             @Override
             public void onFailure(Call<ApiResponse<com.example.riotshop.models.CartItem>> call, Throwable t) {
                 btnAddToCart.setEnabled(true);
+                Toast.makeText(ProductDetailActivity.this, "Lỗi kết nối: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+    
+    private void buyNow(int productTemplateId) {
+        String token = SharedPrefManager.getInstance(this).getToken();
+        if (token == null) {
+            Toast.makeText(this, "Vui lòng đăng nhập", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        
+        btnBuyNow.setEnabled(false);
+        ApiService apiService = RetrofitClient.getInstance().getApiService();
+        AddToCartRequest request = new AddToCartRequest(productTemplateId, 1);
+        Call<ApiResponse<com.example.riotshop.models.CartItem>> call = apiService.addToCart("Bearer " + token, request);
+        
+        call.enqueue(new Callback<ApiResponse<com.example.riotshop.models.CartItem>>() {
+            @Override
+            public void onResponse(Call<ApiResponse<com.example.riotshop.models.CartItem>> call, Response<ApiResponse<com.example.riotshop.models.CartItem>> response) {
+                btnBuyNow.setEnabled(true);
+                if (response.isSuccessful() && response.body() != null && response.body().isSuccess()) {
+                    // Thêm vào giỏ hàng thành công, chuyển đến trang giỏ hàng
+                    Intent intent = new Intent(ProductDetailActivity.this, com.example.riotshop.ui.cart.CartActivity.class);
+                    startActivity(intent);
+                } else {
+                    Toast.makeText(ProductDetailActivity.this, "Lỗi khi thêm vào giỏ hàng", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ApiResponse<com.example.riotshop.models.CartItem>> call, Throwable t) {
+                btnBuyNow.setEnabled(true);
                 Toast.makeText(ProductDetailActivity.this, "Lỗi kết nối: " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });

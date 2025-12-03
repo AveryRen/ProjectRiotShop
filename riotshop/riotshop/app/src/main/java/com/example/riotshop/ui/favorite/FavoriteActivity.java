@@ -102,6 +102,7 @@ public class FavoriteActivity extends AppCompatActivity implements ProductAdapte
                                         template.getTitle(),
                                         FormatUtils.formatPrice(template.getBasePrice()),
                                         R.drawable.placeholder_account,
+                                        template.getImageUrl(),
                                         template.getDescription() != null ? template.getDescription() : ""
                                 );
                                 wishlistProducts.add(product);

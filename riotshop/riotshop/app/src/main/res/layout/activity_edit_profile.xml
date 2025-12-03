@@ -43,12 +43,15 @@
                 android:minHeight="48dp"
                 android:layout_marginBottom="16dp" />
 
-            <EditText
+            <com.example.riotshop.widgets.VietnameseEditText
                 android:id="@+id/et_full_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Họ và tên"
                 android:inputType="textPersonName"
+                android:imeOptions="actionNext"
+                android:importantForAutofill="no"
+                android:maxLength="100"
                 android:textColor="@color/riot_text_light"
                 android:textColorHint="@color/riot_text_hint"
                 android:backgroundTint="@color/riot_gold_accent"
@@ -67,12 +70,14 @@
                 android:minHeight="48dp"
                 android:layout_marginBottom="16dp" />
 
-            <EditText
+            <com.example.riotshop.widgets.VietnameseEditText
                 android:id="@+id/et_address"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Địa chỉ"
                 android:inputType="textPostalAddress"
+                android:imeOptions="actionDone"
+                android:importantForAutofill="no"
                 android:textColor="@color/riot_text_light"
                 android:textColorHint="@color/riot_text_hint"
                 android:backgroundTint="@color/riot_gold_accent"

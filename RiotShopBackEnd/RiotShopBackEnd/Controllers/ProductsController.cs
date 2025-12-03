@@ -68,6 +68,7 @@ public class ProductsController : ControllerBase
                 p.TagRank,
                 p.TagSkins,
                 p.TagCollection,
+                p.ImageUrl,
                 Inventory = inventory != null ? new
                 {
                     inventory.PackageId,
@@ -109,6 +110,7 @@ public class ProductsController : ControllerBase
             product.TagRank,
             product.TagSkins,
             product.TagCollection,
+            product.ImageUrl,
             Inventory = inventory != null ? new
             {
                 inventory.PackageId,
@@ -161,6 +163,7 @@ public class ProductsController : ControllerBase
                 p.Title,
                 p.BasePrice,
                 p.IsFeatured,
+                p.ImageUrl,
                 Inventory = inventory != null ? new
                 {
                     inventory.QuantityAvailable,

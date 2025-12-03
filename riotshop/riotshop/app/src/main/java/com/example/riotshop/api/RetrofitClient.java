@@ -21,8 +21,30 @@ public class RetrofitClient {
         HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
         loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
 
+        // UTF-8 encoding interceptor
+        okhttp3.Interceptor utf8Interceptor = chain -> {
+            okhttp3.Request originalRequest = chain.request();
+            okhttp3.Request.Builder requestBuilder = originalRequest.newBuilder();
+            
+            // Set Accept header with UTF-8
+            String acceptHeader = originalRequest.header("Accept");
+            if (acceptHeader == null || !acceptHeader.contains("charset")) {
+                requestBuilder.header("Accept", "application/json; charset=utf-8");
+            }
+            requestBuilder.header("Accept-Charset", "utf-8");
+            
+            // Ensure Content-Type has charset=utf-8 if it's JSON
+            String contentType = originalRequest.header("Content-Type");
+            if (contentType != null && contentType.contains("application/json") && !contentType.contains("charset")) {
+                requestBuilder.header("Content-Type", contentType + "; charset=utf-8");
+            }
+            
+            return chain.proceed(requestBuilder.build());
+        };
+
         // OkHttpClient (AuthInterceptor will be added per-request if needed)
         OkHttpClient okHttpClient = new OkHttpClient.Builder()
+                .addInterceptor(utf8Interceptor)
                 .addInterceptor(loggingInterceptor)
                 .connectTimeout(Constants.CONNECT_TIMEOUT, TimeUnit.SECONDS)
                 .readTimeout(Constants.READ_TIMEOUT, TimeUnit.SECONDS)

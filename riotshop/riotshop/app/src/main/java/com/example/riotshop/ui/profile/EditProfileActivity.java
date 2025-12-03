@@ -45,6 +45,14 @@ public class EditProfileActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("Chỉnh sửa thông tin");
 
+        // Cấu hình EditText để hỗ trợ tiếng Việt
+        if (etFullName instanceof com.example.riotshop.widgets.VietnameseEditText) {
+            com.example.riotshop.utils.EditTextUtils.configureForVietnamese(etFullName);
+        }
+        if (etAddress instanceof com.example.riotshop.widgets.VietnameseEditText) {
+            com.example.riotshop.utils.EditTextUtils.configureForVietnamese(etAddress);
+        }
+
         loadUserProfile();
         btnSave.setOnClickListener(v -> saveProfile());
     }
@@ -80,10 +88,20 @@ public class EditProfileActivity extends AppCompatActivity {
     }
 
     private void displayUserInfo(UserResponse user) {
-        etEmail.setText(user.getEmail() != null ? user.getEmail() : "");
-        etFullName.setText(user.getFullName() != null ? user.getFullName() : "");
-        etPhone.setText(user.getPhoneNumber() != null ? user.getPhoneNumber() : "");
-        etAddress.setText(user.getAddress() != null ? user.getAddress() : "");
+        // Chỉ setText khi EditText không có focus (không đang gõ)
+        // Điều này đảm bảo không làm mất chữ khi đang gõ tiếng Việt
+        if (!etFullName.hasFocus()) {
+            etFullName.setText(user.getFullName() != null ? user.getFullName() : "");
+        }
+        if (!etEmail.hasFocus()) {
+            etEmail.setText(user.getEmail() != null ? user.getEmail() : "");
+        }
+        if (!etPhone.hasFocus()) {
+            etPhone.setText(user.getPhoneNumber() != null ? user.getPhoneNumber() : "");
+        }
+        if (!etAddress.hasFocus()) {
+            etAddress.setText(user.getAddress() != null ? user.getAddress() : "");
+        }
     }
 
     private void saveProfile() {

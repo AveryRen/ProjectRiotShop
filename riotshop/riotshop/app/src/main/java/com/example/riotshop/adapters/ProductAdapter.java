@@ -64,7 +64,17 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
 
         holder.tvProductName.setText(product.getName());
         holder.tvProductPrice.setText(product.getPrice());
-        holder.ivProductImage.setImageResource(product.getImage());
+        
+        // Load image from URL if available, otherwise use placeholder resource
+        String imageUrl = product.getImageUrl();
+        android.util.Log.d("ProductAdapter", "Product: " + product.getName() + ", imageUrl: " + imageUrl);
+        if (imageUrl != null && !imageUrl.isEmpty()) {
+            android.util.Log.d("ProductAdapter", "Loading image from URL: " + imageUrl);
+            com.example.riotshop.utils.ImageLoader.loadImage(holder.ivProductImage, imageUrl);
+        } else {
+            android.util.Log.w("ProductAdapter", "Image URL is null or empty for product: " + product.getName());
+            holder.ivProductImage.setImageResource(product.getImage());
+        }
         
         // Update favorite icon state
         boolean isFavorite = favoriteTemplateIds != null && favoriteTemplateIds.contains(product.getTemplateId());

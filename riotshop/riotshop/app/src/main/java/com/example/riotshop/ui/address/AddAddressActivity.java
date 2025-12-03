@@ -49,6 +49,23 @@ public class AddAddressActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("Thêm địa chỉ");
 
+        // Cấu hình EditText để hỗ trợ tiếng Việt
+        if (etFullName instanceof com.example.riotshop.widgets.VietnameseEditText) {
+            com.example.riotshop.utils.EditTextUtils.configureForVietnamese(etFullName);
+        }
+        if (etAddressLine instanceof com.example.riotshop.widgets.VietnameseEditText) {
+            com.example.riotshop.utils.EditTextUtils.configureForVietnamese(etAddressLine);
+        }
+        if (etCity instanceof com.example.riotshop.widgets.VietnameseEditText) {
+            com.example.riotshop.utils.EditTextUtils.configureForVietnamese(etCity);
+        }
+        if (etDistrict instanceof com.example.riotshop.widgets.VietnameseEditText) {
+            com.example.riotshop.utils.EditTextUtils.configureForVietnamese(etDistrict);
+        }
+        if (etWard instanceof com.example.riotshop.widgets.VietnameseEditText) {
+            com.example.riotshop.utils.EditTextUtils.configureForVietnamese(etWard);
+        }
+
         btnSave.setOnClickListener(v -> saveAddress());
     }
 

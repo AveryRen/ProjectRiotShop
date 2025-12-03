@@ -19,6 +19,9 @@ public class ImageLoader {
      * Adds Cloudinary transformations for optimal display
      */
     public static void loadImage(ImageView imageView, String imageUrl) {
+        Log.d("ImageLoader", "=== loadImage called ===");
+        Log.d("ImageLoader", "Input URL: " + imageUrl);
+        
         if (imageUrl == null || imageUrl.isEmpty()) {
             Log.w("ImageLoader", "Image URL is null or empty");
             return;
@@ -31,100 +34,90 @@ public class ImageLoader {
         
         // Convert URL for Android emulator
         String convertedUrl = convertUrlForEmulator(imageUrl);
-        
-        // Try to add Cloudinary transformations, but fallback to original if it fails
-        final String finalUrl;
-        if (convertedUrl.contains("cloudinary.com")) {
-            String transformedUrl = addCloudinaryTransformations(convertedUrl, imageView);
-            // If transformation failed or returned same URL, use original
-            if (transformedUrl != null && !transformedUrl.equals(convertedUrl)) {
-                finalUrl = transformedUrl;
-            } else {
-                // Use original URL if transformation failed
-                Log.w("ImageLoader", "Transformation may have failed, using original URL");
-                finalUrl = convertedUrl;
-            }
-        } else {
-            finalUrl = convertedUrl;
-        }
+        Log.d("ImageLoader", "Converted URL: " + convertedUrl);
         
         // Ensure ImageView is visible
         imageView.setVisibility(View.VISIBLE);
         
-        // Try Picasso first
+        // Try loading original URL first (simpler, more reliable)
+        // Only add transformations if needed for performance
+        final String urlToLoad = convertedUrl;
+        
+        Log.d("ImageLoader", "Attempting to load with Picasso: " + urlToLoad);
+        
+        // Try Picasso first - load without resize first for better compatibility
         try {
-            Log.d("ImageLoader", "Loading image with Picasso: " + finalUrl);
-            
-            // Get ImageView dimensions for proper sizing
-            imageView.post(new Runnable() {
-                @Override
-                public void run() {
-                    int width = imageView.getWidth();
-                    int height = imageView.getHeight();
-                    Log.d("ImageLoader", "ImageView dimensions: " + width + "x" + height);
-                }
-            });
-            
             com.squareup.picasso.Picasso.get()
-                .load(finalUrl)
+                .load(urlToLoad)
                 .placeholder(android.R.drawable.ic_menu_gallery)
                 .error(android.R.drawable.ic_menu_report_image)
-                .resize(800, 450) // Match resized image dimensions
-                .centerCrop()
                 .into(imageView, new com.squareup.picasso.Callback() {
                     @Override
                     public void onSuccess() {
-                        Log.d("ImageLoader", "Picasso loaded image successfully from: " + finalUrl);
+                        Log.d("ImageLoader", "✓ Picasso loaded image successfully from: " + urlToLoad);
                         // Ensure ImageView is visible after successful load
                         imageView.post(new Runnable() {
                             @Override
                             public void run() {
                                 imageView.setVisibility(View.VISIBLE);
-                                // Force layout to ensure ImageView displays correctly
                                 imageView.requestLayout();
                                 imageView.invalidate();
-                                Log.d("ImageLoader", "ImageView visibility set to VISIBLE and layout requested");
+                                Log.d("ImageLoader", "ImageView updated and invalidated");
                             }
                         });
                     }
                     
                     @Override
                     public void onError(Exception e) {
-                        Log.e("ImageLoader", "Picasso failed for URL: " + finalUrl);
-                        Log.e("ImageLoader", "Error: " + e.getMessage(), e);
+                        Log.e("ImageLoader", "✗ Picasso failed for URL: " + urlToLoad);
+                        Log.e("ImageLoader", "Error type: " + e.getClass().getName());
+                        Log.e("ImageLoader", "Error message: " + e.getMessage());
+                        if (e.getCause() != null) {
+                            Log.e("ImageLoader", "Cause: " + e.getCause().getMessage());
+                        }
+                        e.printStackTrace();
                         
-                        // If transformed URL failed, try original URL
-                        if (finalUrl.contains("cloudinary.com") && !finalUrl.equals(convertedUrl)) {
-                            Log.d("ImageLoader", "Trying original URL without transformations: " + convertedUrl);
-                            com.squareup.picasso.Picasso.get()
-                                .load(convertedUrl)
-                                .placeholder(android.R.drawable.ic_menu_gallery)
-                                .error(android.R.drawable.ic_menu_report_image)
-                                .resize(800, 450) // Match resized image dimensions
-                                .centerCrop()
-                                .into(imageView, new com.squareup.picasso.Callback() {
-                                    @Override
-                                    public void onSuccess() {
-                                        Log.d("ImageLoader", "Picasso loaded original URL successfully");
-                                        imageView.setVisibility(View.VISIBLE);
-                                    }
-                                    
-                                    @Override
-                                    public void onError(Exception e2) {
-                                        Log.e("ImageLoader", "Picasso failed for original URL too, using AsyncTask fallback");
-                                        new LoadImageTask(imageView).execute(convertedUrl);
-                                    }
-                                });
+                        // Try with transformations if it's a Cloudinary URL
+                        if (urlToLoad.contains("cloudinary.com") && !urlToLoad.contains("/upload/w_")) {
+                            String transformedUrl = addCloudinaryTransformations(urlToLoad, imageView);
+                            if (transformedUrl != null && !transformedUrl.equals(urlToLoad)) {
+                                Log.d("ImageLoader", "Retrying with transformed URL: " + transformedUrl);
+                                com.squareup.picasso.Picasso.get()
+                                    .load(transformedUrl)
+                                    .placeholder(android.R.drawable.ic_menu_gallery)
+                                    .error(android.R.drawable.ic_menu_report_image)
+                                    .into(imageView, new com.squareup.picasso.Callback() {
+                                        @Override
+                                        public void onSuccess() {
+                                            Log.d("ImageLoader", "✓ Picasso loaded transformed URL successfully");
+                                            imageView.setVisibility(View.VISIBLE);
+                                        }
+                                        
+                                        @Override
+                                        public void onError(Exception e2) {
+                                            Log.e("ImageLoader", "✗ Picasso failed for transformed URL too");
+                                            Log.e("ImageLoader", "Falling back to AsyncTask");
+                                            new LoadImageTask(imageView).execute(urlToLoad);
+                                        }
+                                    });
+                            } else {
+                                // Fallback to AsyncTask
+                                Log.e("ImageLoader", "Falling back to AsyncTask");
+                                new LoadImageTask(imageView).execute(urlToLoad);
+                            }
                         } else {
-                            // Fallback to OkHttp
-                            new LoadImageTask(imageView).execute(finalUrl);
+                            // Fallback to AsyncTask
+                            Log.e("ImageLoader", "Falling back to AsyncTask");
+                            new LoadImageTask(imageView).execute(urlToLoad);
                         }
                     }
                 });
         } catch (Exception e) {
-            Log.e("ImageLoader", "Picasso exception: " + e.getMessage(), e);
-            // Fallback to OkHttp
-            new LoadImageTask(imageView).execute(finalUrl);
+            Log.e("ImageLoader", "✗ Picasso exception: " + e.getMessage(), e);
+            e.printStackTrace();
+            // Fallback to AsyncTask
+            Log.e("ImageLoader", "Falling back to AsyncTask due to exception");
+            new LoadImageTask(imageView).execute(urlToLoad);
         }
     }
     
@@ -175,7 +168,8 @@ public class ImageLoader {
             }
             
             // Build transformations string
-            String transformations = "w_" + targetWidth + ",h_" + targetHeight + ",c_fill,q_auto,f_auto";
+            // Use c_limit instead of c_fill to maintain aspect ratio better
+            String transformations = "w_" + targetWidth + ",h_" + targetHeight + ",c_limit,q_auto,f_auto";
             
             // Build transformed URL: baseUrl + transformations + "/" + afterUpload
             String transformedUrl = baseUrl + transformations + "/" + afterUpload;
