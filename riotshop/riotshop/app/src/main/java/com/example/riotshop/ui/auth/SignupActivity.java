@@ -37,13 +37,13 @@ public class SignupActivity extends AppCompatActivity {
         // Initialize SharedPrefManager
         SharedPrefManager.getInstance(this);
 
-        // Ánh xạ View
+        // Ánh xạ View với ID mới
         btnSignup = findViewById(R.id.btn_signup);
-        etUsername = findViewById(R.id.et_username);
+        etUsername = findViewById(R.id.et_username_signup);
         etEmail = findViewById(R.id.et_email_signup);
         etPassword = findViewById(R.id.et_password_signup);
-        etConfirmPassword = findViewById(R.id.et_confirm_password);
-        tvBackToLogin = findViewById(R.id.tv_back_to_login);
+        etConfirmPassword = findViewById(R.id.et_confirm_password_signup);
+        tvBackToLogin = findViewById(R.id.tv_login_back);
 
         // Xử lý quay lại màn hình Đăng nhập
         tvBackToLogin.setOnClickListener(v -> finish());

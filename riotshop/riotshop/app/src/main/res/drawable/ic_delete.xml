@@ -5,6 +5,6 @@
     android:viewportHeight="24"
     android:tint="?attr/colorControlNormal">
   <path
-      android:fillColor="@color/riot_text_hint"
-      android:pathData="M3,3v8h8V3H3zm6,6H5V5h4v4zm-6,4v8h8v-8H3zm6,6H5v-4h4v4zm4,-16v8h8V3h-8zm6,6h-4V5h4v4zm-6,4v8h8v-8h-8zm6,6h-4v-4h4v4z"/>
+      android:fillColor="@android:color/white"
+      android:pathData="M6,19c0,1.1 0.9,2 2,2h8c1.1,0 2,-0.9 2,-2V7H6v12zM19,4h-3.5l-1,-1h-5l-1,1H5v2h14V4z"/>
 </vector>

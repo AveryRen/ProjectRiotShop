@@ -1,4 +1,5 @@
 <resources>
+    <!-- Function Button Styles (from original file) -->
     <style name="FunctionButtonLayout">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">150dp</item>
@@ -13,22 +14,50 @@
     <style name="FunctionButtonText">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:textColor">@color/riot_text_light</item>
+        <item name="android:textColor">@color/riot_text_primary</item>
         <item name="android:textSize">16sp</item>
         <item name="android:textStyle">bold</item>
         <item name="android:layout_marginTop">8dp</item>
     </style>
 
+    <!-- NoActionBar Theme -->
     <style name="Theme.Riotshop.NoActionBar" parent="Theme.Riotshop">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
-        <item name="colorPrimary">@color/riot_black_dark</item>
+        <item name="colorPrimary">@color/riot_background_dark</item>
     </style>
 
-    <!-- Style for admin text inputs -->
+    <!-- EditText Style (as per video) -->
+    <style name="RiotEditTextStyle" parent="Widget.AppCompat.EditText">
+        <item name="android:background">@drawable/edittext_background_selector</item>
+        <item name="android:textColor">@color/riot_text_primary</item>
+        <item name="android:textColorHint">@color/riot_text_hint</item>
+        <item name="android:padding">16dp</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginBottom">16dp</item>
+    </style>
+
+    <!-- Profile Menu Item Style -->
+    <style name="RiotMenuItem">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">16dp</item>
+        <item name="android:background">@drawable/profile_item_background</item>
+        <item name="android:drawableEnd">@drawable/ic_chevron_right</item>
+        <item name="android:drawableTint">@color/riot_gold</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:padding">16dp</item>
+        <item name="android:textColor">@color/riot_text_primary</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:clickable">true</item>
+        <item name="android:focusable">true</item>
+    </style>
+
+    <!-- Style for admin text inputs (RESTORED and STYLED) -->
     <style name="AdminTextInputLayout" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
-        <item name="boxStrokeColor">@color/riot_gold_accent</item>
-        <item name="hintTextColor">@color/riot_gold_accent</item>
+        <item name="boxStrokeColor">@color/riot_gold</item>
+        <item name="hintTextColor">@color/riot_gold</item>
         <item name="boxBackgroundColor">@color/input_background</item>
     </style>
 
@@ -44,4 +73,5 @@
         <item name="android:importantForAutofill">no</item>
         <item name="android:imeOptions">actionDone</item>
     </style>
+
 </resources>

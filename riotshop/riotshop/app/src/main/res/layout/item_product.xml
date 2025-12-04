@@ -1,61 +1,81 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="6dp"
-    app:cardCornerRadius="12dp"
+    android:layout_margin="8dp"
+    app:cardBackgroundColor="@color/riot_card_bg"
+    app:cardCornerRadius="8dp"
     app:cardElevation="4dp"
-    app:cardBackgroundColor="@color/riot_black_dark">
+    app:strokeColor="@color/riot_gold"
+    app:strokeWidth="1dp">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:paddingBottom="12dp">
+        android:orientation="vertical">
 
         <ImageView
             android:id="@+id/iv_product_image"
             android:layout_width="match_parent"
-            android:layout_height="150dp"
+            android:layout_height="140dp"
             android:scaleType="centerCrop"
-            android:src="@drawable/placeholder_account"
-            android:contentDescription="Product Image"/>
+            android:src="@drawable/placeholder_account" />
 
-        <TextView
-            android:id="@+id/tv_product_name"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Acc LMHT Full Skin Hiếm"
-            android:textColor="@color/riot_text_light"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            android:paddingHorizontal="10dp"
-            android:layout_marginTop="8dp"
-            android:maxLines="1"
-            android:ellipsize="end"/>
+            android:orientation="vertical"
+            android:padding="12dp">
 
-        <TextView
-            android:id="@+id/tv_product_price"
+            <TextView
+                android:id="@+id/tv_product_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:maxLines="2"
+                android:ellipsize="end"
+                android:text="Tên Sản Phẩm"
+                android:textColor="@color/riot_text_primary"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tv_product_price"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="1.500.000 VNĐ"
+                android:textColor="@color/riot_gold"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="1.500.000 VNĐ"
-            android:textColor="@color/riot_red_primary"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            android:paddingHorizontal="10dp"
-            android:layout_marginTop="4dp"/>
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp"
+            android:paddingBottom="12dp">
 
-        <ImageView
-            android:id="@+id/iv_favorite_icon"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:src="@drawable/ic_favorite_border_gold"
-            android:layout_gravity="end"
-            android:layout_marginEnd="10dp"
-            android:layout_marginTop="4dp"
-            android:contentDescription="Favorite"/>
+            <ImageButton
+                android:id="@+id/btn_add_to_cart"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:src="@drawable/ic_add_shopping_cart"
+                app:tint="@color/riot_text_hint" />
+
+            <ImageButton
+                android:id="@+id/btn_favorite"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_alignParentEnd="true"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:src="@drawable/ic_favorite_border"
+                app:tint="@color/riot_text_hint" />
+
+        </RelativeLayout>
 
     </LinearLayout>
 

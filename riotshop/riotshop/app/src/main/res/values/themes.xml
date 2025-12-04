@@ -1,8 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
     <style name="Base.Theme.Riotshop" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+        <!-- Riot Primary Colors -->
+        <item name="colorPrimary">@color/riot_gold</item>
+        <item name="colorAccent">@color/riot_gold</item>
+
+        <!-- Background & Surface Colors -->
+        <item name="android:colorBackground">@color/riot_background_dark</item>
+        <item name="colorSurface">@color/riot_background_light</item>
+
+        <!-- Text Colors -->
+        <item name="android:textColor">@color/riot_text_primary</item>
+        <item name="android:textColorHint">@color/riot_text_hint</item>
+
+        <!-- System Bar Colors -->
+        <item name="android:statusBarColor" tools:targetApi="l">@color/riot_background_dark</item>
+        <item name="android:navigationBarColor" tools:targetApi="l">@color/riot_background_dark</item>
+
+        <!-- Default Widget Styles -->
+        <item name="editTextStyle">@style/RiotEditTextStyle</item>
     </style>
 
     <style name="Theme.Riotshop" parent="Base.Theme.Riotshop" />
