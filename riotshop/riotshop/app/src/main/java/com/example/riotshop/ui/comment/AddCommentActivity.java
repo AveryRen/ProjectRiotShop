@@ -47,6 +47,11 @@ public class AddCommentActivity extends AppCompatActivity {
             return;
         }
         
+        toolbar = findViewById(R.id.toolbar_add_comment);
+        ratingBar = findViewById(R.id.rating_bar);
+        etComment = findViewById(R.id.et_comment);
+        btnSubmit = findViewById(R.id.btn_submit_review);
+        
         // If editing, load existing review data
         if (reviewId > 0) {
             int rating = getIntent().getIntExtra("rating", 0);
@@ -55,20 +60,23 @@ public class AddCommentActivity extends AppCompatActivity {
                 ratingBar.setRating(rating);
             }
             if (comment != null) {
-                etComment.setText(comment);
+                // Chỉ setText khi EditText không có focus (không đang gõ)
+                if (!etComment.hasFocus()) {
+                    etComment.setText(comment);
+                }
             }
             getSupportActionBar().setTitle("Sửa đánh giá");
             btnSubmit.setText("Cập nhật");
         }
 
-        toolbar = findViewById(R.id.toolbar_add_comment);
-        ratingBar = findViewById(R.id.rating_bar);
-        etComment = findViewById(R.id.et_comment);
-        btnSubmit = findViewById(R.id.btn_submit_review);
-
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("Thêm đánh giá");
+
+        // Cấu hình EditText để hỗ trợ tiếng Việt
+        if (etComment instanceof com.example.riotshop.widgets.VietnameseEditText) {
+            com.example.riotshop.utils.EditTextUtils.configureForVietnamese(etComment);
+        }
 
         btnSubmit.setOnClickListener(v -> submitReview());
     }

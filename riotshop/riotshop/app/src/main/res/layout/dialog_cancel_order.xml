@@ -23,7 +23,7 @@
         android:textSize="14sp"
         android:layout_marginBottom="8dp" />
 
-    <EditText
+    <com.example.riotshop.widgets.VietnameseEditText
         android:id="@+id/et_cancel_reason"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -31,6 +31,8 @@
         android:gravity="top|start"
         android:hint="Nhập lý do hủy đơn..."
         android:inputType="textMultiLine"
+        android:imeOptions="actionDone"
+        android:importantForAutofill="no"
         android:textColor="@color/riot_text_light"
         android:textColorHint="@color/riot_text_hint"
         android:backgroundTint="@color/riot_gold_accent"

@@ -8,6 +8,7 @@ public class Product implements Parcelable {
     private String name;
     private String price;
     private int image;
+    private String imageUrl; // URL của ảnh từ server
     private String description;
 
     public Product(String name, String price, int image, String description) {
@@ -15,6 +16,7 @@ public class Product implements Parcelable {
         this.name = name;
         this.price = price;
         this.image = image;
+        this.imageUrl = null;
         this.description = description;
     }
 
@@ -23,6 +25,16 @@ public class Product implements Parcelable {
         this.name = name;
         this.price = price;
         this.image = image;
+        this.imageUrl = null;
+        this.description = description;
+    }
+
+    public Product(int templateId, String name, String price, int image, String imageUrl, String description) {
+        this.templateId = templateId;
+        this.name = name;
+        this.price = price;
+        this.image = image;
+        this.imageUrl = imageUrl;
         this.description = description;
     }
 
@@ -32,6 +44,7 @@ public class Product implements Parcelable {
         name = in.readString();
         price = in.readString();
         image = in.readInt();
+        imageUrl = in.readString();
         description = in.readString();
     }
 
@@ -58,6 +71,7 @@ public class Product implements Parcelable {
         dest.writeString(name);
         dest.writeString(price);
         dest.writeInt(image);
+        dest.writeString(imageUrl);
         dest.writeString(description);
     }
 
@@ -80,5 +94,13 @@ public class Product implements Parcelable {
 
     public String getDescription() {
         return description;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 }

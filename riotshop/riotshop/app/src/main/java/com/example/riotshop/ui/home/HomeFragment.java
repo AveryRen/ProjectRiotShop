@@ -56,6 +56,7 @@ public class HomeFragment extends Fragment implements ProductAdapter.OnItemClick
     private EditText etSearch;
     private ImageButton btnFilter;
     private Integer selectedGameId = null;
+    private Runnable searchRunnable;
 
     @Nullable
     @Override
@@ -103,22 +104,66 @@ public class HomeFragment extends Fragment implements ProductAdapter.OnItemClick
     }
     
     private void setupSearch() {
+        // Khởi tạo searchRunnable
+        searchRunnable = () -> {
+            // Kiểm tra lại một lần nữa trước khi search để đảm bảo composition text đã kết thúc
+            if (etSearch instanceof com.example.riotshop.widgets.VietnameseEditText) {
+                if (((com.example.riotshop.widgets.VietnameseEditText) etSearch).isComposing()) {
+                    // Vẫn đang composition, không search
+                    return;
+                }
+            }
+            
+            String query = etSearch.getText().toString().trim();
+            if (query.isEmpty()) {
+                loadProducts();
+            } else {
+                searchProducts(query);
+            }
+        };
+        
+        // Nếu etSearch là VietnameseEditText, sử dụng composition finished listener
+        if (etSearch instanceof com.example.riotshop.widgets.VietnameseEditText) {
+            ((com.example.riotshop.widgets.VietnameseEditText) etSearch)
+                .addOnCompositionFinishedListener(() -> {
+                    // Composition đã kết thúc, có thể search
+                    etSearch.removeCallbacks(searchRunnable);
+                    etSearch.postDelayed(searchRunnable, 300); // Delay ngắn hơn vì đã biết composition đã kết thúc
+                });
+        }
+        
         etSearch.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                String searchQuery = s.toString().trim();
-                if (searchQuery.isEmpty()) {
-                    loadProducts();
-                } else {
-                    searchProducts(searchQuery);
-                }
+                // Không làm gì trong onTextChanged để tránh can thiệp vào composition text
             }
 
             @Override
-            public void afterTextChanged(Editable s) {}
+            public void afterTextChanged(Editable s) {
+                // Kiểm tra xem có composition text đang diễn ra không
+                if (etSearch instanceof com.example.riotshop.widgets.VietnameseEditText) {
+                    if (((com.example.riotshop.widgets.VietnameseEditText) etSearch).isComposing()) {
+                        // Đang gõ tiếng Việt, hủy mọi callback đang chờ và không xử lý
+                        // Sẽ được xử lý bởi composition finished listener
+                        etSearch.removeCallbacks(searchRunnable);
+                        return;
+                    }
+                } else {
+                    // Nếu không phải VietnameseEditText, kiểm tra bằng cách khác
+                    if (com.example.riotshop.utils.EditTextUtils.hasCompositionText(s)) {
+                        etSearch.removeCallbacks(searchRunnable);
+                        return;
+                    }
+                }
+                
+                // Chỉ xử lý sau khi text đã được commit (không phải composition text)
+                // Delay một chút để tránh search quá nhiều lần khi đang gõ
+                etSearch.removeCallbacks(searchRunnable);
+                etSearch.postDelayed(searchRunnable, 500);
+            }
         });
     }
     
@@ -377,11 +422,13 @@ public class HomeFragment extends Fragment implements ProductAdapter.OnItemClick
     private Product convertToProduct(ProductTemplate template) {
         String price = FormatUtils.formatPrice(template.getBasePrice());
         String description = template.getDescription() != null ? template.getDescription() : "";
+        String imageUrl = template.getImageUrl();
         return new Product(
                 template.getTemplateId(),
                 template.getTitle(),
                 price,
                 R.drawable.placeholder_account,
+                imageUrl,
                 description
         );
     }

@@ -31,6 +31,61 @@
             android:layout_height="match_parent">
 
             <LinearLayout
+            <EditText
+                android:id="@+id/et_email"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Email"
+                android:inputType="textEmailAddress"
+                android:textColor="@color/riot_text_light"
+                android:textColorHint="@color/riot_text_hint"
+                android:backgroundTint="@color/riot_gold_accent"
+                android:minHeight="48dp"
+                android:layout_marginBottom="16dp" />
+
+            <com.example.riotshop.widgets.VietnameseEditText
+                android:id="@+id/et_full_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Họ và tên"
+                android:inputType="textPersonName"
+                android:imeOptions="actionNext"
+                android:importantForAutofill="no"
+                android:maxLength="100"
+                android:textColor="@color/riot_text_light"
+                android:textColorHint="@color/riot_text_hint"
+                android:backgroundTint="@color/riot_gold_accent"
+                android:minHeight="48dp"
+                android:layout_marginBottom="16dp" />
+
+            <EditText
+                android:id="@+id/et_phone"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Số điện thoại"
+                android:inputType="phone"
+                android:textColor="@color/riot_text_light"
+                android:textColorHint="@color/riot_text_hint"
+                android:backgroundTint="@color/riot_gold_accent"
+                android:minHeight="48dp"
+                android:layout_marginBottom="16dp" />
+
+            <com.example.riotshop.widgets.VietnameseEditText
+                android:id="@+id/et_address"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Địa chỉ"
+                android:inputType="textPostalAddress"
+                android:imeOptions="actionDone"
+                android:importantForAutofill="no"
+                android:textColor="@color/riot_text_light"
+                android:textColorHint="@color/riot_text_hint"
+                android:backgroundTint="@color/riot_gold_accent"
+                android:minHeight="48dp"
+                android:layout_marginBottom="24dp" />
+
+            <Button
+                android:id="@+id/btn_save_profile"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"

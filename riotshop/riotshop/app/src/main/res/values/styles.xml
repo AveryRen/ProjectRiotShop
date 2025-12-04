@@ -65,6 +65,13 @@
         <item name="android:textColor">@color/input_text</item>
         <item name="android:textColorHint">@color/input_text_hint</item>
         <item name="android:background">@color/input_background</item>
+        <item name="android:importantForAutofill">no</item>
+    </style>
+
+    <!-- Style for Vietnamese text input support -->
+    <style name="VietnameseEditText">
+        <item name="android:importantForAutofill">no</item>
+        <item name="android:imeOptions">actionDone</item>
     </style>
 
 </resources>

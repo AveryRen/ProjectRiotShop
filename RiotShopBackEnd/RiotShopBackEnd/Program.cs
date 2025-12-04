@@ -17,7 +17,24 @@ using CloudinaryDotNet;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        // Configure JSON serialization to use UTF-8 encoding and support Vietnamese characters
+        options.JsonSerializerOptions.Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping;
+        options.JsonSerializerOptions.WriteIndented = false;
+    })
+    .ConfigureApiBehaviorOptions(options =>
+    {
+        // Ensure UTF-8 encoding for all JSON responses
+        options.SuppressModelStateInvalidFilter = false;
+    });
+
+// Configure request encoding to UTF-8
+builder.Services.Configure<Microsoft.AspNetCore.Http.Features.FormOptions>(options =>
+{
+    options.MultipartBodyLengthLimit = long.MaxValue;
+});
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
@@ -165,6 +182,13 @@ app.UseStaticFiles(new StaticFileOptions
 
 // 1. CORS
 app.UseCors("AllowAndroidApp");
+
+// 1.5. Middleware để đảm bảo UTF-8 encoding cho requests (chỉ enable buffering, không set Content-Type)
+app.Use(async (context, next) =>
+{
+    context.Request.EnableBuffering();
+    await next();
+});
 
 // 2. Middleware để đảm bảo token có prefix "Bearer"
 app.Use(async (context, next) =>

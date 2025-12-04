@@ -58,6 +58,25 @@
             android:clipToPadding="false"
             android:padding="8dp" />
 
+            android:hint="Tìm kiếm sản phẩm..."
+            android:inputType="text"
+            android:imeOptions="actionSearch"
+            android:importantForAutofill="no"
+            android:background="@drawable/bg_rounded_search"
+            android:padding="12dp"
+            android:textColor="@color/riot_text_light"
+            android:textColorHint="@color/riot_text_hint"
+            android:drawableStart="@drawable/ic_search"
+            android:drawablePadding="8dp" />
+
+        <ImageButton
+            android:id="@+id/btn_filter"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginStart="8dp"
+            android:src="@drawable/ic_menu_gold"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="Filter" />
     </LinearLayout>
 
     <!-- Snow Effect Overlay -->

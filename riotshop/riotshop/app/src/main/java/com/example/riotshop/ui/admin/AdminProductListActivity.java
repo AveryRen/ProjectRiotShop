@@ -154,6 +154,7 @@ public class AdminProductListActivity extends AppCompatActivity implements Produ
             template.getTitle(),
             FormatUtils.formatPrice(template.getBasePrice()),
             R.drawable.placeholder_account,
+            template.getImageUrl(),
             template.getDescription()
         );
     }
