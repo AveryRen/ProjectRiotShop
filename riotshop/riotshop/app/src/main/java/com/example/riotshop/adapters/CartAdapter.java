@@ -55,7 +55,17 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.CartViewHolder
             if (holder.tvQuantity != null) {
                 holder.tvQuantity.setText("x" + cartItem.getQuantity());
             }
-            holder.ivCartItemImage.setImageResource(R.drawable.placeholder_account);
+            
+            // Load image from URL if available, otherwise use placeholder
+            String imageUrl = cartItem.getProductTemplate().getImageUrl();
+            android.util.Log.d("CartAdapter", "Cart item: " + cartItem.getProductTemplate().getTitle() + ", imageUrl: " + imageUrl);
+            if (imageUrl != null && !imageUrl.isEmpty() && !imageUrl.trim().isEmpty()) {
+                android.util.Log.d("CartAdapter", "Loading image from URL: " + imageUrl);
+                com.example.riotshop.utils.ImageLoader.loadImage(holder.ivCartItemImage, imageUrl);
+            } else {
+                android.util.Log.w("CartAdapter", "Image URL is null or empty for cart item: " + cartItem.getProductTemplate().getTitle());
+                holder.ivCartItemImage.setImageResource(R.drawable.placeholder_account);
+            }
         }
     }
 

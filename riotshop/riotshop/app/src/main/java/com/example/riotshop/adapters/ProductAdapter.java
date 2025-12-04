@@ -70,16 +70,13 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
         // Load image from URL if available, otherwise use placeholder resource
         String imageUrl = product.getImageUrl();
         android.util.Log.d("ProductAdapter", "Product: " + product.getName() + ", imageUrl: " + imageUrl);
-        if (imageUrl != null && !imageUrl.isEmpty()) {
+        if (imageUrl != null && !imageUrl.isEmpty() && !imageUrl.trim().isEmpty()) {
             android.util.Log.d("ProductAdapter", "Loading image from URL: " + imageUrl);
             com.example.riotshop.utils.ImageLoader.loadImage(holder.ivProductImage, imageUrl);
         } else {
             android.util.Log.w("ProductAdapter", "Image URL is null or empty for product: " + product.getName());
             holder.ivProductImage.setImageResource(product.getImage());
         }
-        
-        // CORRECTED: Use the int resource from product.getImage()
-        holder.ivProductImage.setImageResource(product.getImage());
 
         // Update favorite icon state
         boolean isFavorite = favoriteTemplateIds != null && favoriteTemplateIds.contains(product.getTemplateId());

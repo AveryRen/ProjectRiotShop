@@ -41,17 +41,28 @@ public class OrderHistoryFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_order_history, container, false);
 
-        rvOrders = view.findViewById(R.id.rv_orders);
-        tvEmptyOrders = view.findViewById(R.id.tv_empty_orders);
+        rvOrders = view.findViewById(R.id.rv_order_history);
+        tvEmptyOrders = view.findViewById(R.id.tv_empty_order_history);
 
         orderList = new ArrayList<>();
-        setupRecyclerView();
-        loadOrders();
+        
+        // Check if RecyclerView exists before setting it up
+        if (rvOrders != null) {
+            setupRecyclerView();
+            loadOrders();
+        } else {
+            android.util.Log.e("OrderHistoryFragment", "RecyclerView not found in layout!");
+        }
 
         return view;
     }
 
     private void setupRecyclerView() {
+        if (rvOrders == null) {
+            android.util.Log.e("OrderHistoryFragment", "RecyclerView is null, cannot setup");
+            return;
+        }
+        
         orderAdapter = new OrderAdapter(getContext(), orderList, order -> {
             Intent intent = new Intent(getActivity(), OrderDetailActivity.class);
             intent.putExtra("orderId", order.getOrderId());
@@ -98,13 +109,21 @@ public class OrderHistoryFragment extends Fragment {
     }
 
     private void showEmptyOrders() {
-        tvEmptyOrders.setVisibility(View.VISIBLE);
-        rvOrders.setVisibility(View.GONE);
+        if (tvEmptyOrders != null) {
+            tvEmptyOrders.setVisibility(View.VISIBLE);
+        }
+        if (rvOrders != null) {
+            rvOrders.setVisibility(View.GONE);
+        }
     }
 
     private void showOrders() {
-        tvEmptyOrders.setVisibility(View.GONE);
-        rvOrders.setVisibility(View.VISIBLE);
+        if (tvEmptyOrders != null) {
+            tvEmptyOrders.setVisibility(View.GONE);
+        }
+        if (rvOrders != null) {
+            rvOrders.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override

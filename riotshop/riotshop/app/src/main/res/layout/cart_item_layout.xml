@@ -15,6 +15,9 @@
         android:layout_width="80dp"
         android:layout_height="80dp"
         android:scaleType="centerCrop"
+        android:src="@drawable/placeholder_account"
+        android:contentDescription="Cart Item Image"
+        android:visibility="visible"
         tools:src="@drawable/placeholder_account" />
 
     <LinearLayout

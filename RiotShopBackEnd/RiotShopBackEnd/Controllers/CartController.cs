@@ -49,6 +49,8 @@ public class CartController : ControllerBase
                 ci.ProductTemplate.TemplateId,
                 ci.ProductTemplate.Title,
                 ci.ProductTemplate.BasePrice,
+                ci.ProductTemplate.ImageUrl,
+                ci.ProductTemplate.Description,
                 GameName = ci.ProductTemplate.GameType?.Name,
                 Inventory = _context.InventoryPackages
                     .Where(ip => ip.TemplateId == ci.TemplateId)

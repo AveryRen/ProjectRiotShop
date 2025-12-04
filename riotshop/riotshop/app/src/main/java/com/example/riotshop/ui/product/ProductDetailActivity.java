@@ -2,8 +2,13 @@ package com.example.riotshop.ui.product;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -11,14 +16,20 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.riotshop.R;
+import com.example.riotshop.adapters.ProductAdapter;
+import com.example.riotshop.adapters.ReviewAdapter;
 import com.example.riotshop.api.ApiService;
 import com.example.riotshop.api.RetrofitClient;
 import com.example.riotshop.models.AddToCartRequest;
+import com.example.riotshop.models.AddWishlistRequest;
 import com.example.riotshop.models.ApiResponse;
 import com.example.riotshop.models.CartItem;
+import com.example.riotshop.models.Product;
 import com.example.riotshop.models.ProductTemplate;
 import com.example.riotshop.models.Review;
 import com.example.riotshop.models.Wishlist;
+
+import java.util.List;
 import com.example.riotshop.ui.comment.AddCommentActivity;
 import com.example.riotshop.utils.FormatUtils;
 import com.example.riotshop.utils.SharedPrefManager;
@@ -28,15 +39,21 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class ProductDetailActivity extends AppCompatActivity {
+public class ProductDetailActivity extends AppCompatActivity implements ProductAdapter.OnItemClickListener, ProductAdapter.OnFavoriteClickListener {
 
     private ImageView ivProductImage;
-    private TextView tvProductTitle, tvProductPrice, tvProductDescription;
+    private TextView tvProductTitle, tvProductPrice, tvProductDescription, tvProductQuantity;
     private Button btnBuyNow;
     private ImageButton btnAddToCart;
     private CollapsingToolbarLayout collapsingToolbar;
     private Toolbar toolbar;
     private int templateId;
+    private RecyclerView rvRelatedProducts, rvReviews;
+    private ProductAdapter relatedProductAdapter;
+    private ReviewAdapter reviewAdapter;
+    private List<Product> relatedProducts;
+    private List<Review> reviews;
+    private ProductTemplate currentProduct;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,8 +67,18 @@ public class ProductDetailActivity extends AppCompatActivity {
         tvProductTitle = findViewById(R.id.tv_product_detail_title);
         tvProductPrice = findViewById(R.id.tv_product_detail_price);
         tvProductDescription = findViewById(R.id.tv_product_detail_description);
+        // tvProductQuantity may not exist in layout - will be null
+        tvProductQuantity = null;
         btnBuyNow = findViewById(R.id.btn_buy_now);
         btnAddToCart = findViewById(R.id.btn_detail_add_to_cart);
+        
+        // RecyclerViews don't exist in current layout - set to null
+        rvRelatedProducts = null;
+        rvReviews = null;
+        
+        // Initialize lists (even if RecyclerViews don't exist)
+        relatedProducts = new java.util.ArrayList<Product>();
+        reviews = new java.util.ArrayList<Review>();
 
         // Setup Toolbar
         setSupportActionBar(toolbar);
@@ -91,49 +118,91 @@ public class ProductDetailActivity extends AppCompatActivity {
                 if (response.isSuccessful() && response.body() != null && response.body().isSuccess()) {
                     ProductTemplate product = response.body().getData();
                     if (product != null) {
+                        currentProduct = product; // Save product for later use
                         displayProduct(product);
+                    } else {
+                        android.util.Log.e("ProductDetail", "Product data is null");
+                        Toast.makeText(ProductDetailActivity.this, "Không tìm thấy thông tin sản phẩm", Toast.LENGTH_SHORT).show();
+                        finish();
                     }
+                } else {
+                    android.util.Log.e("ProductDetail", "API response not successful: " + (response.body() != null ? response.body().getMessage() : response.message()));
+                    Toast.makeText(ProductDetailActivity.this, "Lỗi tải thông tin sản phẩm", Toast.LENGTH_SHORT).show();
+                    finish();
                 }
             }
 
             @Override
             public void onFailure(Call<ApiResponse<ProductTemplate>> call, Throwable t) {
-                Toast.makeText(ProductDetailActivity.this, "Lỗi khi tải sản phẩm: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                android.util.Log.e("ProductDetail", "Failed to load product: " + t.getMessage(), t);
+                Toast.makeText(ProductDetailActivity.this, "Lỗi kết nối: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                finish();
             }
         });
     }
 
     private void displayProduct(ProductTemplate product) {
+        android.util.Log.d("ProductDetail", "=== displayProduct called ===");
+        android.util.Log.d("ProductDetail", "Product: " + product.getTitle());
+        android.util.Log.d("ProductDetail", "ImageView is null: " + (ivProductImage == null));
+        
         collapsingToolbar.setTitle(product.getTitle());
         tvProductTitle.setText(product.getTitle());
         tvProductPrice.setText(FormatUtils.formatPrice(product.getBasePrice()));
-        tvProductDescription.setText(product.getDescription() != null ? product.getDescription() : "Không có mô tả.");
         tvProductDescription.setText(product.getDescription() != null ? product.getDescription() : "");
         
         // Load image from URL if available, otherwise use placeholder
         String imageUrl = product.getImageUrl();
         android.util.Log.d("ProductDetail", "Product imageUrl: " + imageUrl);
-        if (imageUrl != null && !imageUrl.isEmpty()) {
+        
+        if (ivProductImage == null) {
+            android.util.Log.e("ProductDetail", "ImageView is null! Cannot load image.");
+            return;
+        }
+        
+        // Ensure ImageView is visible
+        ivProductImage.setVisibility(View.VISIBLE);
+        android.util.Log.d("ProductDetail", "ImageView visibility set to VISIBLE");
+        
+        if (imageUrl != null && !imageUrl.isEmpty() && !imageUrl.trim().isEmpty()) {
             android.util.Log.d("ProductDetail", "Loading image from URL: " + imageUrl);
-            com.example.riotshop.utils.ImageLoader.loadImage(ivProductImage, imageUrl);
+            // Ensure ImageView is visible before loading
+            ivProductImage.post(new Runnable() {
+                @Override
+                public void run() {
+                    ivProductImage.setVisibility(View.VISIBLE);
+                    ivProductImage.setAlpha(1.0f);
+                    // Use ImageLoader to load image
+                    com.example.riotshop.utils.ImageLoader.loadImage(ivProductImage, imageUrl);
+                }
+            });
         } else {
             android.util.Log.w("ProductDetail", "Image URL is null or empty, using placeholder");
-            ivProductImage.setImageResource(R.drawable.placeholder_account);
+            ivProductImage.post(new Runnable() {
+                @Override
+                public void run() {
+                    ivProductImage.setImageResource(R.drawable.placeholder_account);
+                    ivProductImage.setVisibility(View.VISIBLE);
+                    ivProductImage.setAlpha(1.0f);
+                }
+            });
         }
         
         // Display inventory quantity
-        if (product.getInventory() != null) {
-            int quantity = product.getInventory().getQuantityAvailable();
-            if (quantity > 0) {
-                tvProductQuantity.setText("Còn lại: " + quantity + " tài khoản");
-                tvProductQuantity.setTextColor(ContextCompat.getColor(this, R.color.riot_text_secondary));
+        if (tvProductQuantity != null) {
+            if (product.getInventory() != null) {
+                int quantity = product.getInventory().getQuantityAvailable();
+                if (quantity > 0) {
+                    tvProductQuantity.setText("Còn lại: " + quantity + " tài khoản");
+                    tvProductQuantity.setTextColor(ContextCompat.getColor(this, R.color.riot_text_secondary));
+                } else {
+                    tvProductQuantity.setText("Hết hàng");
+                    tvProductQuantity.setTextColor(ContextCompat.getColor(this, R.color.error));
+                }
+                tvProductQuantity.setVisibility(View.VISIBLE);
             } else {
-                tvProductQuantity.setText("Hết hàng");
-                tvProductQuantity.setTextColor(ContextCompat.getColor(this, R.color.error));
+                tvProductQuantity.setVisibility(View.GONE);
             }
-            tvProductQuantity.setVisibility(View.VISIBLE);
-        } else {
-            tvProductQuantity.setVisibility(View.GONE);
         }
     }
     
@@ -159,7 +228,9 @@ public class ProductDetailActivity extends AppCompatActivity {
                             );
                             relatedProducts.add(product);
                         }
-                        relatedProductAdapter.notifyDataSetChanged();
+                        if (relatedProductAdapter != null) {
+                            relatedProductAdapter.notifyDataSetChanged();
+                        }
                     }
                 }
             }
@@ -172,30 +243,11 @@ public class ProductDetailActivity extends AppCompatActivity {
     }
     
     private void setupRelatedProductsRecyclerView() {
-        relatedProductAdapter = new ProductAdapter(this, relatedProducts);
-        relatedProductAdapter.setOnItemClickListener(this);
-        relatedProductAdapter.setOnFavoriteClickListener(this);
-        rvRelatedProducts.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
-        rvRelatedProducts.setAdapter(relatedProductAdapter);
+        // RecyclerView not in layout - method kept for future use
     }
     
     private void setupReviewsRecyclerView() {
-        int currentUserId = SharedPrefManager.getInstance(this).getUserId();
-        reviewAdapter = new ReviewAdapter(this, reviews, currentUserId);
-        reviewAdapter.setOnReviewActionListener(new ReviewAdapter.OnReviewActionListener() {
-            @Override
-            public void onEditReview(Review review) {
-                // Open AddCommentActivity in edit mode
-                Intent intent = new Intent(ProductDetailActivity.this, AddCommentActivity.class);
-                intent.putExtra("templateId", templateId);
-                intent.putExtra("reviewId", review.getReviewId());
-                intent.putExtra("rating", review.getRating());
-                intent.putExtra("comment", review.getComment());
-                startActivityForResult(intent, 100);
-            }
-
-        // Set a placeholder image. The logic to load a real image URL has been removed to fix compilation errors.
-        ivProductImage.setImageResource(R.drawable.placeholder_account);
+        // RecyclerView not in layout - method kept for future use
     }
 
     private void addToCart() {
@@ -205,13 +257,6 @@ public class ProductDetailActivity extends AppCompatActivity {
             return;
         }
 
-        btnAddToCart.setEnabled(false);
-        ApiService apiService = RetrofitClient.getInstance().getApiService();
-        AddToCartRequest request = new AddToCartRequest(templateId, 1);
-        Call<ApiResponse<CartItem>> call = apiService.addToCart("Bearer " + token, request);
-
-        call.enqueue(new Callback<ApiResponse<CartItem>>() {
-        
         // Sử dụng templateId từ intent thay vì currentProduct để tránh bug
         if (templateId <= 0) {
             Toast.makeText(this, "Đang tải thông tin sản phẩm...", Toast.LENGTH_SHORT).show();
@@ -225,7 +270,7 @@ public class ProductDetailActivity extends AppCompatActivity {
         
         call.enqueue(new Callback<ApiResponse<com.example.riotshop.models.CartItem>>() {
             @Override
-            public void onResponse(Call<ApiResponse<CartItem>> call, Response<ApiResponse<CartItem>> response) {
+            public void onResponse(Call<ApiResponse<com.example.riotshop.models.CartItem>> call, Response<ApiResponse<com.example.riotshop.models.CartItem>> response) {
                 btnAddToCart.setEnabled(true);
                 if (response.isSuccessful() && response.body() != null && response.body().isSuccess()) {
                     Toast.makeText(ProductDetailActivity.this, "Đã thêm vào giỏ hàng", Toast.LENGTH_SHORT).show();
@@ -235,7 +280,7 @@ public class ProductDetailActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<ApiResponse<CartItem>> call, Throwable t) {
+            public void onFailure(Call<ApiResponse<com.example.riotshop.models.CartItem>> call, Throwable t) {
                 btnAddToCart.setEnabled(true);
                 Toast.makeText(ProductDetailActivity.this, "Lỗi kết nối: " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
