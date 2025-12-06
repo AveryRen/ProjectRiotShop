@@ -10,6 +10,7 @@ public class SharedPrefManager {
     private static final String SHARED_PREF_NAME = "RiotShopSharedPref";
     private static final String KEY_USER_ID = "keyUserId";
     private static final String KEY_USERNAME = "keyUsername";
+    private static final String KEY_EMAIL = "keyEmail";
     private static final String KEY_USER_ROLE = "keyUserRole";
     private static final String KEY_IS_LOGGED_IN = "keyIsLoggedIn";
     private static final String KEY_TOKEN = "keyToken";
@@ -41,8 +42,9 @@ public class SharedPrefManager {
         SharedPreferences sharedPreferences = ctx.getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
 
-        // Cần thiết để HomeActivity hiển thị tên
+        // Cần thiết để HomeActivity hiển thị tên và email
         editor.putString(KEY_USERNAME, user.getUsername());
+        editor.putString(KEY_EMAIL, user.getEmail());
 
         editor.apply();
     }
@@ -52,6 +54,12 @@ public class SharedPrefManager {
         SharedPreferences sharedPreferences = ctx.getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
         // Trả về "Khách" nếu chưa tìm thấy
         return sharedPreferences.getString(KEY_USERNAME, "Khách");
+    }
+    
+    // Lấy email người dùng
+    public String getEmail() {
+        SharedPreferences sharedPreferences = ctx.getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
+        return sharedPreferences.getString(KEY_EMAIL, "");
     }
 
     // Đăng xuất (được gọi trong HomeActivity)
