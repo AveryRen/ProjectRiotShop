@@ -72,13 +72,18 @@ public class ProductDetailActivity extends AppCompatActivity implements ProductA
         btnBuyNow = findViewById(R.id.btn_buy_now);
         btnAddToCart = findViewById(R.id.btn_detail_add_to_cart);
         
-        // RecyclerViews don't exist in current layout - set to null
+        // RecyclerViews
         rvRelatedProducts = null;
-        rvReviews = null;
+        rvReviews = findViewById(R.id.rv_reviews);
         
-        // Initialize lists (even if RecyclerViews don't exist)
+        // Initialize lists
         relatedProducts = new java.util.ArrayList<Product>();
         reviews = new java.util.ArrayList<Review>();
+        
+        // Setup reviews RecyclerView
+        if (rvReviews != null) {
+            setupReviewsRecyclerView();
+        }
 
         // Setup Toolbar
         setSupportActionBar(toolbar);
@@ -89,6 +94,9 @@ public class ProductDetailActivity extends AppCompatActivity implements ProductA
 
         if (templateId > 0) {
             loadProductDetail();
+            loadReviews();
+            // Đảm bảo nút "Thêm đánh giá" luôn hiển thị ngay từ đầu
+            ensureAddReviewButtonVisible();
         } else {
             Toast.makeText(this, "Không tìm thấy sản phẩm", Toast.LENGTH_SHORT).show();
             finish();
@@ -106,6 +114,45 @@ public class ProductDetailActivity extends AppCompatActivity implements ProductA
         });
 
         btnAddToCart.setOnClickListener(v -> addToCart());
+        
+        // Setup review buttons - Đảm bảo luôn hiển thị và hoạt động
+        Button btnViewAllReviews = findViewById(R.id.btn_view_all_reviews);
+        Button btnAddReview = findViewById(R.id.btn_add_review);
+        
+        // Đảm bảo nút luôn hiển thị
+        if (btnViewAllReviews != null) {
+            btnViewAllReviews.setVisibility(View.VISIBLE);
+            btnViewAllReviews.setOnClickListener(v -> {
+                if (templateId > 0) {
+                    Intent intent = new Intent(this, com.example.riotshop.ui.comment.CommentActivity.class);
+                    intent.putExtra("templateId", templateId);
+                    startActivity(intent);
+                } else {
+                    Toast.makeText(this, "Không tìm thấy sản phẩm", Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
+        
+        if (btnAddReview != null) {
+            btnAddReview.setVisibility(View.VISIBLE);
+            btnAddReview.setEnabled(true);
+            btnAddReview.setOnClickListener(v -> {
+                if (templateId <= 0) {
+                    Toast.makeText(this, "Không tìm thấy sản phẩm", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                String token = SharedPrefManager.getInstance(this).getToken();
+                if (token == null) {
+                    Toast.makeText(this, "Vui lòng đăng nhập", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                Intent intent = new Intent(this, com.example.riotshop.ui.comment.AddCommentActivity.class);
+                intent.putExtra("templateId", templateId);
+                startActivityForResult(intent, 200);
+            });
+        } else {
+            android.util.Log.e("ProductDetail", "btn_add_review is null!");
+        }
     }
 
     private void loadProductDetail() {
@@ -247,7 +294,155 @@ public class ProductDetailActivity extends AppCompatActivity implements ProductA
     }
     
     private void setupReviewsRecyclerView() {
-        // RecyclerView not in layout - method kept for future use
+        if (rvReviews == null) return;
+        
+        int currentUserId = SharedPrefManager.getInstance(this).getUserId();
+        reviewAdapter = new ReviewAdapter(this, reviews, currentUserId);
+        reviewAdapter.setOnReviewActionListener(new ReviewAdapter.OnReviewActionListener() {
+            @Override
+            public void onEditReview(Review review) {
+                Intent intent = new Intent(ProductDetailActivity.this, com.example.riotshop.ui.comment.AddCommentActivity.class);
+                intent.putExtra("templateId", templateId);
+                intent.putExtra("reviewId", review.getReviewId());
+                intent.putExtra("rating", review.getRating());
+                intent.putExtra("comment", review.getComment());
+                startActivityForResult(intent, 200);
+            }
+
+            @Override
+            public void onDeleteReview(Review review) {
+                new android.app.AlertDialog.Builder(ProductDetailActivity.this)
+                    .setTitle("Xóa đánh giá")
+                    .setMessage("Bạn có chắc chắn muốn xóa đánh giá này?")
+                    .setPositiveButton("Xóa", (dialog, which) -> deleteReview(review.getReviewId()))
+                    .setNegativeButton("Hủy", null)
+                    .show();
+            }
+        });
+        rvReviews.setLayoutManager(new LinearLayoutManager(this));
+        rvReviews.setAdapter(reviewAdapter);
+    }
+    
+    private void loadReviews() {
+        if (templateId <= 0) {
+            android.util.Log.w("ProductDetail", "Cannot load reviews: templateId is " + templateId);
+            return;
+        }
+        
+        android.util.Log.d("ProductDetail", "Loading reviews for templateId: " + templateId);
+        ApiService apiService = RetrofitClient.getInstance().getApiService();
+        Call<ApiResponse<List<Review>>> call = apiService.getReviewsByTemplate(templateId);
+
+        call.enqueue(new Callback<ApiResponse<List<Review>>>() {
+            @Override
+            public void onResponse(Call<ApiResponse<List<Review>>> call, Response<ApiResponse<List<Review>>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    ApiResponse<List<Review>> apiResponse = response.body();
+                    if (apiResponse.isSuccess() && apiResponse.getData() != null && !apiResponse.getData().isEmpty()) {
+                        reviews.clear();
+                        // Show only first 3 reviews in product detail
+                        List<Review> allReviews = apiResponse.getData();
+                        int maxReviews = Math.min(3, allReviews.size());
+                        reviews.addAll(allReviews.subList(0, maxReviews));
+                        if (reviewAdapter != null) {
+                            reviewAdapter.notifyDataSetChanged();
+                        }
+                        showReviews();
+                        android.util.Log.d("ProductDetail", "Loaded " + reviews.size() + " reviews");
+                    } else {
+                        showEmptyReviews();
+                        android.util.Log.d("ProductDetail", "No reviews found for this product");
+                    }
+                } else {
+                    showEmptyReviews();
+                    android.util.Log.w("ProductDetail", "Failed to load reviews: " + (response.body() != null ? response.body().getMessage() : response.message()));
+                }
+                // Đảm bảo nút "Thêm đánh giá" luôn hiển thị
+                ensureAddReviewButtonVisible();
+            }
+
+            @Override
+            public void onFailure(Call<ApiResponse<List<Review>>> call, Throwable t) {
+                android.util.Log.e("ProductDetail", "Error loading reviews: " + t.getMessage(), t);
+                showEmptyReviews();
+                // Đảm bảo nút "Thêm đánh giá" luôn hiển thị ngay cả khi lỗi
+                ensureAddReviewButtonVisible();
+            }
+        });
+    }
+    
+    private void ensureAddReviewButtonVisible() {
+        Button btnAddReview = findViewById(R.id.btn_add_review);
+        if (btnAddReview != null) {
+            btnAddReview.setVisibility(View.VISIBLE);
+            btnAddReview.setEnabled(true);
+            // Đảm bảo nút có thể scroll đến được
+            btnAddReview.post(new Runnable() {
+                @Override
+                public void run() {
+                    // Scroll đến nút nếu cần
+                    android.util.Log.d("ProductDetail", "Add review button is visible and enabled");
+                }
+            });
+        } else {
+            android.util.Log.e("ProductDetail", "btn_add_review is null in ensureAddReviewButtonVisible");
+        }
+    }
+    
+    private void showEmptyReviews() {
+        TextView tvEmptyReviews = findViewById(R.id.tv_reviews_empty);
+        if (tvEmptyReviews != null) {
+            tvEmptyReviews.setVisibility(View.VISIBLE);
+        }
+        if (rvReviews != null) {
+            rvReviews.setVisibility(View.GONE);
+        }
+        // Đảm bảo nút "Thêm đánh giá" luôn hiển thị
+        ensureAddReviewButtonVisible();
+    }
+
+    private void showReviews() {
+        TextView tvEmptyReviews = findViewById(R.id.tv_reviews_empty);
+        if (tvEmptyReviews != null) {
+            tvEmptyReviews.setVisibility(View.GONE);
+        }
+        if (rvReviews != null) {
+            rvReviews.setVisibility(View.VISIBLE);
+        }
+        // Đảm bảo nút "Thêm đánh giá" luôn hiển thị
+        ensureAddReviewButtonVisible();
+    }
+    
+    private void deleteReview(int reviewId) {
+        String token = SharedPrefManager.getInstance(this).getToken();
+        if (token == null) {
+            Toast.makeText(this, "Vui lòng đăng nhập", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        ApiService apiService = RetrofitClient.getInstance().getApiService();
+        Call<ApiResponse<Object>> call = apiService.deleteReview("Bearer " + token, reviewId);
+
+        call.enqueue(new Callback<ApiResponse<Object>>() {
+            @Override
+            public void onResponse(Call<ApiResponse<Object>> call, Response<ApiResponse<Object>> response) {
+                if (response.isSuccessful() && response.body() != null && response.body().isSuccess()) {
+                    Toast.makeText(ProductDetailActivity.this, "Đã xóa đánh giá", Toast.LENGTH_SHORT).show();
+                    loadReviews();
+                } else {
+                    String errorMsg = "Lỗi khi xóa đánh giá";
+                    if (response.body() != null && response.body().getMessage() != null) {
+                        errorMsg = response.body().getMessage();
+                    }
+                    Toast.makeText(ProductDetailActivity.this, errorMsg, Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ApiResponse<Object>> call, Throwable t) {
+                Toast.makeText(ProductDetailActivity.this, "Lỗi kết nối: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void addToCart() {
@@ -359,6 +554,24 @@ public class ProductDetailActivity extends AppCompatActivity implements ProductA
                     Toast.makeText(ProductDetailActivity.this, "Lỗi: " + t.getMessage(), Toast.LENGTH_SHORT).show();
                 }
             });
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 200 && resultCode == RESULT_OK) {
+            loadReviews(); // Reload reviews after adding/editing
+        }
+    }
+    
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (templateId > 0) {
+            loadReviews(); // Reload reviews when activity resumes
+            // Đảm bảo nút "Thêm đánh giá" luôn hiển thị khi quay lại
+            ensureAddReviewButtonVisible();
         }
     }
 

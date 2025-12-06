@@ -62,9 +62,14 @@ public class CommentActivity extends AppCompatActivity {
         setupRecyclerView();
 
         btnAddReview.setOnClickListener(v -> {
+            String token = SharedPrefManager.getInstance(this).getToken();
+            if (token == null) {
+                Toast.makeText(this, "Vui lòng đăng nhập để thêm đánh giá", Toast.LENGTH_SHORT).show();
+                return;
+            }
             Intent intent = new Intent(this, AddCommentActivity.class);
             intent.putExtra("templateId", templateId);
-            startActivity(intent);
+            startActivityForResult(intent, 100);
         });
 
         loadReviews();

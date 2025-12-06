@@ -62,7 +62,9 @@ public class WishlistController : ControllerBase
             {
                 w.ProductTemplate.TemplateId,
                 w.ProductTemplate.Title,
+                w.ProductTemplate.Description,
                 w.ProductTemplate.BasePrice,
+                w.ProductTemplate.ImageUrl,
                 GameName = w.ProductTemplate.GameType?.Name
             } : null,
             w.AddedAt

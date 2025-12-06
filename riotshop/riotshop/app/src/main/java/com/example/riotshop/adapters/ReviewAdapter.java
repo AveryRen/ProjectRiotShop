@@ -89,6 +89,8 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewView
         
         // Show edit/delete buttons only if this is current user's review
         boolean isMyReview = (currentUserId > 0 && review.getUserId() == currentUserId);
+        android.util.Log.d("ReviewAdapter", "Review userId: " + review.getUserId() + ", Current userId: " + currentUserId + ", isMyReview: " + isMyReview);
+        
         if (isMyReview && onReviewActionListener != null) {
             holder.btnEdit.setVisibility(View.VISIBLE);
             holder.btnDelete.setVisibility(View.VISIBLE);
@@ -107,6 +109,9 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewView
         } else {
             holder.btnEdit.setVisibility(View.GONE);
             holder.btnDelete.setVisibility(View.GONE);
+            // Clear listeners to avoid memory leaks
+            holder.btnEdit.setOnClickListener(null);
+            holder.btnDelete.setOnClickListener(null);
         }
     }
 
